@@ -1,5 +1,5 @@
 初起動時は
-uprojectをダブルクリック
+.uprojectをダブルクリック
 →エディタ内のツールからvisual studioプロジェクトを更新
 →エクスプローラーのvisual studioを開いてビルド
 の作業を必ず行ってください
