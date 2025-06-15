@@ -1,8 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+Ôªø// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "WuBranch/Actor/Pillar.h"
 #include "Components/BoxComponent.h"
+#include <WuBranch/Actor/Match.h>
 
 // Sets default values
 APillar::APillar()
@@ -15,7 +16,6 @@ APillar::APillar()
 
 	PillarMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pillar Mesh"));
 	PillarMesh->SetupAttachment(RootComponent);
-	PillarMesh->OnComponentBeginOverlap.AddDynamic(this, &APillar::OnCollisionOverlapBegin);
 	
 	/*Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
 	Collision->SetupAttachment(RootComponent);
@@ -28,6 +28,7 @@ void APillar::BeginPlay()
 	Super::BeginPlay();
 
 	Initialize();
+	PillarMesh->OnComponentBeginOverlap.AddDynamic(this, &APillar::OnCollisionOverlapBegin);
 }
 
 void APillar::Initialize()
@@ -47,16 +48,16 @@ float APillar::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, A
 	DamageToApply = FMath::Clamp(DamageToApply, 0.0f, HP);
 	HP -= DamageToApply;
 
-	// îjâÛÇ≥ÇÍÇΩ
+	// Á†¥Â£ä„Åï„Çå„Åü
 	if (HP <= 0.0f)
 	{
-		// ÉGÉtÉFÉNÉg
+		// „Ç®„Éï„Çß„ÇØ„Éà
 
-		// ÉGÉtÉFÉNÉgÇ»Ç«Ç™èIÇÌÇ¡ÇΩÇÁè¡Ç∑
+		// „Ç®„Éï„Çß„ÇØ„Éà„Å™„Å©„ÅåÁµÇ„Çè„Å£„Åü„ÇâÊ∂à„Åô
 		Destroy();
 	}
 	else {
-		// ÉGÉtÉFÉNÉg
+		// „Ç®„Éï„Çß„ÇØ„Éà
 
 	}
 	return 0.0f;
@@ -64,22 +65,29 @@ float APillar::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, A
 
 void APillar::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// çUåÇé“Ç©ÇÁçUåÇóÕÇñ·Ç§
-	float Attack = 10;
-	float DamageAmount = FMath::Clamp(Attack, 0.0f, HP); // ó·Ç∆ÇµÇƒ10ÇÃÉ_ÉÅÅ[ÉWÇó^Ç¶ÇÈ
-	HP -= DamageAmount;
-
-	// îjâÛÇ≥ÇÍÇΩ
-	if (HP <= 0.0f)
+	if (OtherActor)
 	{
-		// ÉGÉtÉFÉNÉg
+		if (AMatch* Weapon = Cast<AMatch>(OtherActor))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Pillar Hit!"));
+			// ÊîªÊíÉËÄÖ„Åã„ÇâÊîªÊíÉÂäõ„ÇíË≤∞„ÅÜ
+			float Attack = Weapon->GetAttackPower();
+			float DamageAmount = FMath::Clamp(Attack, 0.0f, HP); // ‰æã„Å®„Åó„Å¶10„ÅÆ„ÉÄ„É°„Éº„Ç∏„Çí‰∏é„Åà„Çã
+			HP -= DamageAmount;
 
-		// ÉGÉtÉFÉNÉgÇ»Ç«Ç™èIÇÌÇ¡ÇΩÇÁè¡Ç∑
-		Destroy();
-	}
-	else {
-		// ÉGÉtÉFÉNÉg
+			// Á†¥Â£ä„Åï„Çå„Åü
+			if (HP <= 0.0f)
+			{
+				// „Ç®„Éï„Çß„ÇØ„Éà
 
+				// „Ç®„Éï„Çß„ÇØ„Éà„Å™„Å©„ÅåÁµÇ„Çè„Å£„Åü„ÇâÊ∂à„Åô
+				Destroy();
+			}
+			else {
+				// „Ç®„Éï„Çß„ÇØ„Éà
+
+			}
+		}
 	}
 }
 
