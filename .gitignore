@@ -21,9 +21,6 @@ Saved/
 *.csproj
 *.xcodeproj
 
-# Logs
-Saved/Logs/
-
 # OS-specific junk
 .DS_Store
 Thumbs.db
