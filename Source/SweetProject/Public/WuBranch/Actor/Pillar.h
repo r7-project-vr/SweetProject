@@ -23,7 +23,7 @@ protected:
 
 public:	
 	// Called every frame
-	//virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
 	float GetHP() const;
@@ -35,16 +35,45 @@ private:
 	UFUNCTION()
 	void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	/// <summary>
+	/// 焼かれている
+	/// </summary>
+	/// <param name="DeltaTime"></param>
+	void Burning(float DeltaTime);
+
+	/// <summary>
+	/// メッシュ
+	/// </summary>
 	UPROPERTY(VisibleAnywhere, Category = "Pillar")
 	UStaticMeshComponent* PillarMesh;
 
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess="true"))
-	class UBoxComponent* Collision;*/
+	/// <summary>
+	/// コリジョン
+	/// </summary>
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess="true"))
+	class UBoxComponent* Collision;
 
+	/// <summary>
+	/// 最大HP
+	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Pillar", meta = (AllowPrivateAccess = "true"))
 	float MaxHP;
 
+	/// <summary>
+	/// 今のHP
+	/// </summary>
 	UPROPERTY(VisibleAnywhere, Category = "Pillar", meta = (AllowPrivateAccess="true"))
 	float HP;
+
+	/// <summary>
+	/// 焼かれている時HPが減る速度, HP / sec
+	/// </summary>
+	UPROPERTY(EditDefaultsOnly, Category = "Pillar", meta = (AllowPrivateAccess = "true"))
+	float BurningHPLossRate;
+
+	/// <summary>
+	/// 焼かれているか
+	/// </summary>
+	bool IsBurning;
 
 };

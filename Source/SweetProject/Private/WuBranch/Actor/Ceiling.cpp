@@ -11,7 +11,7 @@ ACeiling::ACeiling()
 	//PrimaryActorTick.bCanEverTick = true;
 
 	Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
-	Collision->SetupAttachment(RootComponent);
+	RootComponent = Collision;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ceiling Mesh"));		
 	Mesh->SetupAttachment(RootComponent);
