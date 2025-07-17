@@ -22,15 +22,17 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UCapsuleComponent* CapsuleComp;
+	UCapsuleComponent* MyCapsuleComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USceneComponent* VROrigin;
+	USceneComponent* MyVROrigin;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UCameraComponent* Camera;
+	UCameraComponent* MyCamera;
 
 	float InitialCameraZ = 0.0f;
+
+	float CurrentCapsuleHeight = 88.0f;
 
 public:	
 	// Called every frame
