@@ -25,7 +25,7 @@ public:
 
 private:
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere)

@@ -7,19 +7,17 @@
 
 // Sets default values
 APillar::APillar()
+	: IsBurning(false)
+	, BurningHPLossRate(0.0f)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	//PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 
-	USceneComponent* myRoot = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-	RootComponent = myRoot;
+	Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
+	RootComponent = Collision;
 
 	PillarMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pillar Mesh"));
 	PillarMesh->SetupAttachment(RootComponent);
-	
-	/*Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
-	Collision->SetupAttachment(RootComponent);
-	Collision->OnComponentBeginOverlap.AddDynamic(this, &APillar::OnCollisionOverlapBegin);*/
 }
 
 // Called when the game starts or when spawned
@@ -27,13 +25,25 @@ void APillar::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Collision->OnComponentBeginOverlap.AddDynamic(this, &APillar::OnCollisionOverlapBegin);
 	Initialize();
-	PillarMesh->OnComponentBeginOverlap.AddDynamic(this, &APillar::OnCollisionOverlapBegin);
 }
 
 void APillar::Initialize()
 {
 	HP = MaxHP;
+	IsBurning = false;
+}
+
+// Called every frame
+void APillar::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (IsBurning)
+	{
+		Burning(DeltaTime);
+	}
 }
 
 float APillar::GetHP() const
@@ -70,31 +80,44 @@ void APillar::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 		if (AMatch* Weapon = Cast<AMatch>(OtherActor))
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Pillar Hit!"));
-			// 攻撃者から攻撃力を貰う
-			float Attack = Weapon->GetAttackPower();
-			float DamageAmount = FMath::Clamp(Attack, 0.0f, HP); // 例として10のダメージを与える
-			HP -= DamageAmount;
+			IsBurning = true;
+			//// 攻撃者から攻撃力を貰う
+			//float Attack = Weapon->GetAttackPower();
+			//float DamageAmount = FMath::Clamp(Attack, 0.0f, HP); // 例として10のダメージを与える
+			//HP -= DamageAmount;
 
-			// 破壊された
-			if (HP <= 0.0f)
-			{
-				// エフェクト
+			//// 破壊された
+			//if (HP <= 0.0f)
+			//{
+			//	// エフェクト
 
-				// エフェクトなどが終わったら消す
-				Destroy();
-			}
-			else {
-				// エフェクト
+			//	// エフェクトなどが終わったら消す
+			//	Destroy();
+			//}
+			//else {
+			//	// エフェクト
 
-			}
+			//}
 		}
 	}
 }
 
-// Called every frame
-//void APillar::Tick(float DeltaTime)
-//{
-//	Super::Tick(DeltaTime);
-//
-//}
+void APillar::Burning(float DeltaTime)
+{
+	float Damage = BurningHPLossRate * DeltaTime;
+	HP -= Damage;
 
+	FString txt = FString::Printf(TEXT("Pillar Burning! HP: %lf"), HP);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, txt);
+	// 燃やされているエフェクト
+	
+
+	// 破壊された
+	if (HP <= 0.0f)
+	{
+		// エフェクト
+
+		// エフェクトなどが終わったら消す
+		Destroy();
+	}
+}
