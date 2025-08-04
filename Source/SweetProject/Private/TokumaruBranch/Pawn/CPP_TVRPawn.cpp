@@ -56,20 +56,18 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 
 	if (MyCapsuleComp && MyCamera) {
 
-		float CurrentZ = MyCamera->GetRelativeLocation().Z;
+		float CurrentZ = MyCamera->GetComponentLocation().Z;
 		float DeltaZ = InitialCameraZ - CurrentZ;
 		UE_LOG(LogTemp, Warning, TEXT("InitialCameraZ: %f, CurrentZ: %f, DeltaZ: %f"), InitialCameraZ, CurrentZ, DeltaZ);
-		if (DeltaZ > 10.0f && CurrentCapsuleHeight != 44.0f) // 30cm
+		if (DeltaZ > distanceToCrouching)
 		{
 			// カプセルの高さ変更
-			MyCapsuleComp->SetCapsuleHalfHeight(44.0f); // しゃがみ用サイズ
-			CurrentCapsuleHeight = 44.0f;
+			SetCapsuleHeight(44.0f);// しゃがみ用サイズ
 			UE_LOG(LogTemp, Warning, TEXT("しゃがんでるよ"));
 		}
 		else
 		{
-			MyCapsuleComp->SetCapsuleHalfHeight(88.0f); // 通常サイズ
-			CurrentCapsuleHeight = 88.0f;
+			SetCapsuleHeight(88.0f); // 通常サイズ
 			UE_LOG(LogTemp, Warning, TEXT("立ってるよ"));
 		}
 	}
@@ -80,5 +78,22 @@ void ACPP_TVRPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ACPP_TVRPawn::SetCapsuleHeight(float newHeight)
+{
+	if (!MyCapsuleComp)return;
+
+	//位置調整前のカプセルの半分の高さを取得
+	float nowHalfHeight = MyCapsuleComp->GetUnscaledCapsuleHalfHeight();
+	//調整先の高さと現在の高さの差を求める
+	float nextHalfHeight = nowHalfHeight - newHeight;
+
+	//カプセルの高さを更新
+	MyCapsuleComp->SetCapsuleHalfHeight(newHeight, false);
+
+	//調整前のカプセルの高さと調整後の高さの差からカプセルの中心位置を調整
+	FVector currentCoupLoc = MyCapsuleComp->GetRelativeLocation();
+	MyCapsuleComp->SetRelativeLocation(currentCoupLoc + FVector(0, 0, -nextHalfHeight));
 }
 

@@ -17,6 +17,9 @@ public:
 	// Sets default values for this pawn's properties
 	ACPP_TVRPawn();
 
+	UPROPERTY(EditAnywhere)
+	float distanceToCrouching = 0.0f;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -32,7 +35,12 @@ protected:
 
 	float InitialCameraZ = 0.0f;
 
-	float CurrentCapsuleHeight = 88.0f;
+	/// <summary>
+	/// カプセルの高さの調整と、足元との違和感の払拭のために位置を調整する。
+	/// </summary>
+	/// <param name="newHeight"></param>
+	UFUNCTION(BlueprintCallable)
+	void SetCapsuleHeight(float newHeight);
 
 public:	
 	// Called every frame
