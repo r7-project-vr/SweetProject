@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "wuBranch/Enum/DonutLightStates.h"
 #include "DonutLight.generated.h"
 
-class UBoxComponent;
-class USpotLightComponent;
+class USphereComponent;
+class UPointLightComponent;
 
 UCLASS()
 class SWEETPROJECT_API ADonutLight : public AActor
@@ -24,7 +25,7 @@ protected:
 
 public:	
 	// Called every frame
-	//virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override;
 
 private:
 
@@ -33,6 +34,22 @@ private:
 	/// </summary>
 	UFUNCTION()
 	void OnFireOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	/// <summary>
+	/// ライトの強度を更新する
+	/// </summary>
+	/// <param name="Time">継続時間</param>
+	void UpdateLightIntensity(float Time);
+
+	/// <summary>
+	/// 光をつける
+	/// </summary>
+	void TurnOnLight();
+
+	/// <summary>
+	/// 光を消す
+	/// </summary>
+	void TurnOffLight();
 
 	/// <summary>
 	/// ドーナツのメッシュ
@@ -50,12 +67,31 @@ private:
 	/// ドーナツのコリジョン
 	/// </summary>
 	UPROPERTY(EditAnywhere)
-	UBoxComponent* Collision;
+	USphereComponent* Collision;
 
 	/// <summary>
 	/// ドーナツのライト
 	/// </summary>
 	UPROPERTY(EditAnywhere)
-	USpotLightComponent* Light;
+	UPointLightComponent* Light;
 
+	// ライトの最大強度
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float MaxIntensity = 50.f; 
+
+	/// <summary>
+	/// 状態
+	/// </summary>
+	EDonutLightStates CurrentState;
+
+	/// <summary>
+	/// 点灯時間(単位：秒), 0:無限
+	/// </summary>
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float GlowDuration;
+
+	/// <summary>
+	/// 時間のカウンター
+	/// </summary>
+	float TimeCounter = 0.f;
 };
