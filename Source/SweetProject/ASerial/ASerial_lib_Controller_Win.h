@@ -2,8 +2,8 @@
 // Controller mode only
 
 // include
-#include "ASerial/ASerial_packet.h"
-#include "ASerial/WindowsSerial.h"
+#include "ASerial_packet.h"
+#include "WindowsSerial.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -16,7 +16,7 @@ class ASerial_lib_Controller_Win : public ASerialPacket {
     ///  @brief ASerialオブジェクトを生成する
     ///  @param target_device_id  ターゲットデバイスID
     ///  @param device_ver デバイスのバージョン
-    ASerial_lib_Controller_Win(int target_device_id, int device_ver);//id=0x10,ver=0x01
+    ASerial_lib_Controller_Win(int target_device_id, int device_ver);
 
     /// @brief ASerialオブジェクトを生成する
     /// @param target_device_id ターゲットデバイスID
@@ -46,7 +46,12 @@ class ASerial_lib_Controller_Win : public ASerialPacket {
     /// @param read_data_buf  読み取りデータを格納するバッファへのポインタ
 	/// @return 0:読み取り中 -1:エラー 1:読み取り完了
 	/// @note 読み取り中は0を返し、データが読み取られた場合は1を返します。 
-    int ReadDataProcess(ASerialDataStruct::ASerialData *read_data_buf);//これは常に処理するやつ(ループとかで)。1になったらWriteDataを呼ぶ
+    int ReadDataProcess(ASerialDataStruct::ASerialData *read_data_buf);
+
+    /// @brief データを読み取る
+    /// @param read_data_buf 読み取りデータを格納するバッファへのポインタ
+    /// @return 0:読み取り成功 -1:読み取り失敗 -2:タイムアウㇳ
+    int ReadData(ASerialDataStruct::ASerialData *read_data_buf);
 
     /// @brief データを送信
     /// @param command　コマンド
@@ -58,7 +63,7 @@ class ASerial_lib_Controller_Win : public ASerialPacket {
 	/// @brief データを送信(コマンドのみ)
 	/// @param command コマンド
 	/// @return 0:書き込み成功 -1:書き込み失敗
-    int WriteData(uint8_t command);//commandは0x20
+    int WriteData(uint8_t command);
 
  private:
     WindowsSerial *m_inteface = nullptr;

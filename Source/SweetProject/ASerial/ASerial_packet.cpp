@@ -2,9 +2,9 @@
 // Copyright(c) 2025 NextAmusement
 // See LICENSE file in the root directory.
 
-#include "ASerial/ASerial_packet.h"
+#include "ASerial_packet.h"
 
-#include "ASerial/ASerial_ErrorCodeList.h"
+#include "ASerial_ErrorCodeList.h"
 #ifdef ARDUINO  // ArduinoIDE環境
 #include <Arduino.h>
 

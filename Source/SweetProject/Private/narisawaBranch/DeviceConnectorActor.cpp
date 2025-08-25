@@ -1,6 +1,5 @@
 #include "narisawaBranch/DeviceConnectorActor.h"
-#include "ASerial/ASerial_packet.h"
-#include "HAL/UnrealMemory.h" 
+#include "../ASerial/WindowsSerial.h"
 
 ADeviceConnectorActor::ADeviceConnectorActor()
 {
@@ -10,65 +9,62 @@ ADeviceConnectorActor::ADeviceConnectorActor()
 void ADeviceConnectorActor::BeginPlay()
 {
     Super::BeginPlay();
-    ConnectToDevice();
-}
-
-void ADeviceConnectorActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-    DisconnectFromDevice();
-    Super::EndPlay(EndPlayReason);
-}
-
-void ADeviceConnectorActor::ConnectToDevice()
-{
-    // クラス名をヘッダファイル名に合わせてインスタンス化
-    ASerialController = MakeUnique<ASerial_lib_Controller_Win>(0x01, 0x01);
+    ASerialController = MakeUnique<ASerial_lib_Controller_Win>(0x10, 0x01); // ID: 0x10
     SerialInterface = MakeUnique<WindowsSerial>();
     ASerialController->SetInterfacePt(SerialInterface.Get());
 
-    int connectedPort = ASerialController->AutoConnectDevice();
-
-    if (connectedPort != -1)
+    const int32 ConnectedComPort = ASerialController->AutoConnectDevice();
+    if (ConnectedComPort != -1)
     {
-        ConnectionStatus = FString::Printf(TEXT("Successfully connected to COM%d"), connectedPort);
+        bIsDeviceConnected = true;
+        ConnectionStatus = FString::Printf(TEXT("OK: Connected on COM%d"), ConnectedComPort);
+        ASerialController->WriteData(0x20);
     }
     else
     {
-        ConnectionStatus = TEXT("Failed to connect. Is the device connected?");
-    }
-}
-
-void ADeviceConnectorActor::DisconnectFromDevice()
-{
-    if (ASerialController.IsValid())
-    {
-        ASerialController->DisConnectDevice();
-        ConnectionStatus = TEXT("Disconnected");
+        bIsDeviceConnected = false;
+        ConnectionStatus = TEXT("ERROR: Could not find device.");
     }
 }
 
 void ADeviceConnectorActor::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    if (ASerialController.IsValid() && ASerialController->GetConnectionState())
+    if (bIsDeviceConnected && ASerialController.IsValid())
     {
-        ReadAndProcessData();
+        static ASerialDataStruct::ASerialData receivedData;
+        const int32 ReadStatus = ASerialController->ReadDataProcess(&receivedData);
+
+        if (ReadStatus == 1 && receivedData.command == 0x20)
+        {
+            ParseSensorData(receivedData.data, receivedData.data_num);
+        }
     }
 }
 
-void ADeviceConnectorActor::ReadAndProcessData()
+void ADeviceConnectorActor::ParseSensorData(const uint8_t* data, uint8_t data_num)
 {
-    static ASerialDataStruct::ASerialData receivedData;
-    int status = ASerialController->ReadDataProcess(&receivedData);
+    // 回転16バイト + 加速度12バイト = 28バイト以上あるかチェック
+    if (data_num < 28) return;
 
-    if (status == 1) // パケット受信成功
+    // FQuatとFVectorはUEの標準型なので、そのまま使える
+    FQuat rotation;
+    FVector acceleration;
+
+    // メモリコピーでバイト配列を構造体に変換
+    FMemory::Memcpy(&rotation, &data[0], sizeof(FQuat));
+    FMemory::Memcpy(&acceleration, &data[16], sizeof(FVector));
+
+    // UPROPERTYの変数に格納
+    DeviceRotation = rotation;
+    DeviceAcceleration = acceleration;
+}
+
+void ADeviceConnectorActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    if (ASerialController.IsValid() && bIsDeviceConnected)
     {
-        // デバイス側が送信するデータ形式に合わせて解析処理を実装
-        // 例: コマンドID 0x20で、クォータニオン(16byte) + ボタン(1byte)が送られてくる場合
-        if (receivedData.command == 0x20 && receivedData.data_num >= 17)
-        {
-            FMemory::Memcpy(&DeviceRotation, receivedData.data, sizeof(float) * 4);
-            bIsActionButtonPressed = (receivedData.data[16] == 1);
-        }
+        ASerialController->DisConnectDevice();
     }
+    Super::EndPlay(EndPlayReason);
 }
