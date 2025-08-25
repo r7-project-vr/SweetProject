@@ -35,7 +35,7 @@ void ACPP_TVRPawn::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("VROrigin not found"));
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("VROrigin found!!!!!"));
+		//UE_LOG(LogTemp, Warning, TEXT("VROrigin found!!!!!"));
 	}
 
 	//Camera = Cast<UCameraComponent>(GetDefaultSubobjectByName(TEXT("Camera")));
@@ -47,7 +47,7 @@ void ACPP_TVRPawn::BeginPlay()
 	}
 	if (MyCamera)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Camera found!!!!!!!!!!!!"));
+		//UE_LOG(LogTemp, Warning, TEXT("Camera found!!!!!!!!!!!!"));
 	}
 
 	MyCapsuleComp = FindComponentByClass<UCapsuleComponent>();
@@ -55,7 +55,7 @@ void ACPP_TVRPawn::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("Capsule not found"));
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("Capsule found!!!!!!!!!!!!"));
+		//UE_LOG(LogTemp, Warning, TEXT("Capsule found!!!!!!!!!!!!"));
 	}
 
 	FTimerHandle resetCamerapos;
@@ -119,20 +119,20 @@ void ACPP_TVRPawn::SetCapsuleHeight(float newHeight)
 
 void ACPP_TVRPawn::OnCrouchStart()
 {
-	UE_LOG(LogTemp, Warning, TEXT("しゃがんだら"));
+	//UE_LOG(LogTemp, Warning, TEXT("しゃがんだら"));
 	if (!swordPickupActor) {
-		UE_LOG(LogTemp, Warning, TEXT("ポイントがない！"));
+		//UE_LOG(LogTemp, Warning, TEXT("ポイントがない！"));
 		return;
 	}
 
 	//座標の間の距離を計算
 	if (FVector::Dist(this->GetActorLocation(), swordPickupActor->GetActorLocation()) < pickupRange)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("装備する"));
+		//UE_LOG(LogTemp, Warning, TEXT("装備する"));
 		EquipSword();
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("距離が足りない"));
+		//UE_LOG(LogTemp, Warning, TEXT("距離が足りない"));
 	}
 }
 

@@ -55,14 +55,14 @@ void ACPP_Match::StopFire()
 
 void ACPP_Match::Interact(AActor* Interactor)
 {
-	if (!isFire) {
-		UE_LOG(LogTemp, Error, TEXT("火ついてないっすよ"));
+	if (!isFire) { 
+		//GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Cyan, TEXT("火がついてない"));
 		return;
 	}
 
 
 	if (ICPP_UinterfaceToIntaract* interacter = Cast<ICPP_UinterfaceToIntaract>(Interactor)) {
-		UE_LOG(LogTemp, Error, TEXT("火ついてるんで剣に火つけますね"));
+		//GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Cyan, TEXT("火を付けます"));
 		interacter->BYInteract();
 	}
 }

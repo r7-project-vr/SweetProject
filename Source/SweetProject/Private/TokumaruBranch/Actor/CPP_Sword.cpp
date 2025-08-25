@@ -42,7 +42,8 @@ void ACPP_Sword::BYInteract()
 {
 	if (alreadyBaf)return;
 	alreadyBaf = true;
-	UE_LOG(LogTemp, Error, TEXT("trueになったよ！！！！！！！！！！！！！！"));
+	//GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Cyan, TEXT("剣変更"));
+	//UE_LOG(LogTemp, Error, TEXT("trueになったよ！！！！！！！！！！！！！！"));
 }
 
 void ACPP_Sword::OnAttackCollisionBeginOverlap(AActor* OtherActor)

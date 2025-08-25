@@ -18,7 +18,7 @@ public:
 	// Sets default values for this pawn's properties
 	ACPP_TVRPawn();
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Pickup")
 	float distanceToCrouching = 0.0f;
 
 	/// <summary>
@@ -43,6 +43,7 @@ protected:
 	/// <summary>
     /// しゃがみ判定になるための座標差
     /// </summary>
+	UPROPERTY(EditAnywhere, Category = "Pickup")
 	float InitialCameraZ = 10.0f;
 
 	/// <summary>
@@ -75,7 +76,7 @@ protected:
 
 	// 判定距離
 	UPROPERTY(EditAnywhere, Category = "Pickup")
-	float pickupRange = 100.0f; // cm単位
+	float pickupRange = 200.0f; // cm単位
 
 	void InitCameraPosition();
 
