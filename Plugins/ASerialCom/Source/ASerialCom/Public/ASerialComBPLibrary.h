@@ -1,33 +1,53 @@
-﻿// Copyright Epic Games, Inc. All Rights Reserved.
-
+﻿// このコードでファイル全体を完全に上書きしてください
 #pragma once
 
+#include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ASerialLibControllerWin.h"
-#include "ASerialComBPLibrary.generated.h"
 
-/* 
-*	Function library class.
-*	Each function in it is expected to be static and represents blueprint node that can be called in any blueprint.
-*
-*	When declaring function you can define metadata for the node. Key function specifiers will be BlueprintPure and BlueprintCallable.
-*	BlueprintPure - means the function does not affect the owning object in any way and thus creates a node without Exec pins.
-*	BlueprintCallable - makes a function which can be executed in Blueprints - Thus it has Exec pins.
-*	DisplayName - full name of the node, shown when you mouse over the node and in the blueprint drop down menu.
-*				Its lets you name the node using characters not allowed in C++ function names.
-*	CompactNodeTitle - the word(s) that appear on the node.
-*	Keywords -	the list of keywords that helps you to find node when you search for it using Blueprint drop-down menu. 
-*				Good example is "Print String" node which you can find also by using keyword "log".
-*	Category -	the category your node will be under in the Blueprint drop-down menu.
-*
-*	For more info on custom blueprint nodes visit documentation:
-*	https://wiki.unrealengine.com/Custom_Blueprint_Node_Creation
-*/
+// ★★★ 修正: .generated.h のインクルードを一番下に移動 ★★★
+#include "ASerialComBPLibrary.generated.h" 
+
+// 前方宣言: これからこういうクラスを使いますよ、とコンパイラに教える
+class ASerial_lib_Controller_Win;
+class WindowsSerial;
+
+// --- データ受信イベントの型を宣言 ---
+// 回転(FRotator), 加速度(FVector), ボタン(bool)の3つのパラメータを持つイベントを定義
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSensorDataReceived, const FRotator&, Rotation, const FVector&, Acceleration, bool, bIsButtonPressed);
+
 UCLASS()
 class UASerialComBPLibrary : public UBlueprintFunctionLibrary
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 
-	//UFUNCTION(BlueprintCallable, Category = "ASerial Library", meta = (DisplayName = "Create ASerial Controller"))
-	static UASerialLibControllerWin* CreateASerialLibController();
+public:
+	// --- ブループリントでアクセスするためのイベント ---
+	UPROPERTY(BlueprintAssignable, Category = "ASerialCom")
+	static FOnSensorDataReceived OnSensorDataReceived;
+
+	// --- ブループリントから呼び出す関数 ---
+
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Connect to ASerial Device", Keywords = "ASerial connect"), Category = "ASerialCom")
+	static int32 Connect(int32 DeviceId = 10, int32 DeviceVersion = 1);
+
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Disconnect ASerial Device", Keywords = "ASerial disconnect"), Category = "ASerialCom")
+	static void Disconnect();
+
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Request Sensor Data", Keywords = "ASerial request data"), Category = "ASerialCom")
+	static void RequestSensorData();
+
+private:
+	// --- 内部処理用の変数 ---
+	static TUniquePtr<ASerial_lib_Controller_Win> ASerialController;
+	static TUniquePtr<WindowsSerial> SerialInterface;
+	static bool bIsConnected;
+	static FTickerDelegate TickDelegate;
+	static FDelegateHandle TickHandle;
+
+	// 毎フレーム、デバイスからのデータをチェックする関数
+	static bool Tick(float DeltaTime);
+
+	// 受信したバイトデータを解析する関数
+	static void ParseSensorData(const uint8* data, uint8 data_num);
 };
