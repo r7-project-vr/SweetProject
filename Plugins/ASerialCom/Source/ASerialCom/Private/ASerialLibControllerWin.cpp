@@ -48,6 +48,12 @@ ConnectResult UASerialLibControllerWin::ConnectDevice(int COM_num)
         return ConnectResult::Fail;
     }
 
+    if (!m_inteface)
+    {
+        UE_LOG(LogTemp, Error, TEXT("ConnectDevice failed because m_inteface is nullptr. Please call SetInterfacePt() first."));
+        return ConnectResult::Fail;
+    }
+
     m_inteface->clear(); //接続したときにバッファをクリア
 
     st = WriteData(RESERVED_COMMAND_GET_INFO);

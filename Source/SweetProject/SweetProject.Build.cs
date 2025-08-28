@@ -9,5 +9,7 @@ public class SweetProject : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Projects", "AIModule", "GameplayTasks", "NavigationSystem" });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
+
+        PublicDependencyModuleNames.Add("ASerialCom");
     }
 }
