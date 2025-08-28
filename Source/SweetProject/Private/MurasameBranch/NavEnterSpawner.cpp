@@ -6,6 +6,8 @@
 #include "NavigationSystem.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/Engine.h"
+#include "TimerManager.h"
+
 
 
 // Sets default values
@@ -28,6 +30,9 @@ void ANavEnterSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	Box->OnComponentBeginOverlap.AddDynamic(this, &ANavEnterSpawner::OnBoxBeginOverlap);
+	Box->OnComponentEndOverlap.AddDynamic(this, &ANavEnterSpawner::OnBoxEndOverlap);
+
+	
 }
 
 void ANavEnterSpawner::OnBoxBeginOverlap(
@@ -38,33 +43,162 @@ void ANavEnterSpawner::OnBoxBeginOverlap(
 	bool /*bFromSweep*/,
 	const FHitResult& /*SweepResult*/)
 {
-	if (!IsValid(OtherActor)) return;
+	APawn* Pawn = Cast<APawn>(OtherActor);
+	if (!Pawn) return;
 
-	//プレイヤPawnだけ反応ある
-	const APawn* AsPawn = Cast<APawn>(OtherActor);
-	if (!AsPawn) return;
+	//プレイヤーを追跡、ループ開始
+	TrackedPawn = Pawn;
+	StartSpawningLoop(Pawn);
 
-	//地面スポット生成
-	const FVector EndPoint = PickGroundPointNearPlayer(const_cast<AActor*>(OtherActor));
-	//空中スポット生成
+	//if (!IsValid(OtherActor)) return;
+
+	////プレイヤPawnだけに反応ある
+	//const APawn* AsPawn = Cast<APawn>(OtherActor);
+	//if (!AsPawn) return;
+
+	////地面スポット生成
+	//const FVector EndPoint = PickGroundPointNearPlayer(const_cast<AActor*>(OtherActor));
+	////空中スポット生成
+	//const FVector StartPoint = PickAirPointUnderWitch();
+
+	////未完成　DebugOutput
+	//UWorld* W = GetWorld();
+	//if (!W) return;
+
+	//DrawDebugSphere(W, EndPoint, 14.f, 12, FColor::Green, false, 6.f);
+	//DrawDebugSphere(W, StartPoint, 14.f, 12, FColor::Red, false, 6.f);
+	//DrawDebugLine(W, StartPoint, EndPoint, FColor::Yellow, false, 6.f, 0, 1.5f);
+
+	//if (GEngine)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(
+	//		-1, 4.0f, FColor::Cyan,
+	//		FString::Printf(TEXT("Start(air): %s  End(ground): %s"),
+	//			*StartPoint.ToCompactString(), *EndPoint.ToCompactString()));
+	//}
+
+}
+
+void ANavEnterSpawner::OnBoxEndOverlap(
+	UPrimitiveComponent*,
+	AActor* OtherActor,
+	UPrimitiveComponent*,
+	int32) 
+{
+	APawn* Pawn = Cast<APawn>(OtherActor);
+	if (!Pawn) return;
+
+	//PawnがTriggerBoxにありませんとき、ループ停止
+	TArray<AActor*> Overlapping;
+	Box->GetOverlappingActors(Overlapping, APawn::StaticClass());
+	if (Overlapping.Num() == 0)
+	{
+		TrackedPawn = nullptr;
+		StopSpawningLoop();
+	}
+	else
+	{
+		//もし追跡のPawnが離れたら、追跡させるPawnを変わり
+		if (TrackedPawn.Get() == Pawn)
+		{
+			for (AActor* A : Overlapping)
+			{
+				if (APawn* P = Cast<APawn>(A))
+				{
+					TrackedPawn = P;
+					break;
+				}
+			}
+		}
+	}
+}
+
+
+void ANavEnterSpawner::StartSpawningLoop(APawn* /*Pawn*/)
+{
+	if (!GetWorld()) return;
+
+	//二重発動しない
+	if (GetWorldTimerManager().IsTimerActive(SpawnTimerHandle)) return;
+
+	//タイマーループで使う
+	GetWorldTimerManager().SetTimer(
+		SpawnTimerHandle, this, &ANavEnterSpawner::SpawnOnce,
+		SpawnInterval, true, FirstDelay
+	);
+
+	//FirstDelay = 0.0fのときがすぐ生成
+	//または、SpawnOnce()を使用
+
+}
+
+
+void ANavEnterSpawner::StopSpawningLoop()
+{
+	if (GetWorld())
+	{
+		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+	}
+}
+
+void ANavEnterSpawner::SpawnOnce()
+{
+	//Pawnなしー＞TimerStop
+	if (bStopIfNoPawnInside)
+	{
+		bool bAnyPawnInside = Box->IsOverlappingActor(TrackedPawn.Get());
+		if (!bAnyPawnInside)
+		{
+			//他のPawnあるか　確認
+			TArray<AActor*> Overlapping;
+			Box->GetOverlappingActors(Overlapping, APawn::StaticClass());
+			if (Overlapping.Num() == 0)
+			{
+				StopSpawningLoop();
+				return;
+			}
+			else
+			{
+				TrackedPawn = Cast<APawn>(Overlapping[0]);
+			}
+		}
+	}
+
+	AActor* Player = TrackedPawn.Get();
+	if (!IsValid(Player))
+	{
+		StopSpawningLoop();
+		return;
+	}
+
+	const FVector EndPoint = PickGroundPointNearPlayer(Player);
 	const FVector StartPoint = PickAirPointUnderWitch();
 
-	//未完成　DebugOutput
-	UWorld* W = GetWorld();
-	if (!W) return;
-
-	DrawDebugSphere(W, EndPoint, 14.f, 12, FColor::Green, false, 6.f);
-	DrawDebugSphere(W, StartPoint, 14.f, 12, FColor::Red, false, 6.f);
-	DrawDebugLine(W, StartPoint, EndPoint, FColor::Yellow, false, 6.f, 0, 1.5f);
+	//DebugOutputテスト用
+	DrawDebugSphere(GetWorld(), StartPoint, 14.f, 12, FColor::Red, false,
+		SpawnInterval * 1.5f);
+	DrawDebugSphere(GetWorld(), EndPoint, 14.f, 12, FColor::Green, false,
+		SpawnInterval * 1.5f);
+	DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Yellow, false,
+		SpawnInterval * 1.5f, 0, 1.5f);
+	DrawDebugString(GetWorld(), StartPoint + FVector(0, 0, 20),
+		FString::Printf(TEXT("Start %s"), *StartPoint.ToCompactString()),
+		nullptr, FColor::Red, SpawnInterval * 1.5f, true);
+	DrawDebugString(GetWorld(), EndPoint + FVector(0, 0, 20),
+		FString::Printf(TEXT("End %s"), *EndPoint.ToCompactString()),
+		nullptr, FColor::Green, SpawnInterval * 1.5f, true);
 
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(
-			-1, 4.0f, FColor::Cyan,
-			FString::Printf(TEXT("Start(air): %s  End(ground): %s"),
-				*StartPoint.ToCompactString(), *EndPoint.ToCompactString()));
+			0, SpawnInterval * 0.9f, FColor::Cyan,
+			FString::Printf(TEXT("Start:%s End:%s"),
+				*StartPoint.ToCompactString(), *EndPoint.ToCompactString())
+		);
 	}
+
 }
+
 
 FVector ANavEnterSpawner::PickGroundPointNearPlayer(AActor* Player)
 {
