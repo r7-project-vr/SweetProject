@@ -76,7 +76,7 @@ private:
 	UPointLightComponent* Light;
 
 	// ライトの最大強度
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float MaxIntensity = 50.f; 
 
 	/// <summary>
@@ -87,7 +87,7 @@ private:
 	/// <summary>
 	/// 点灯時間(単位：秒), 0:無限
 	/// </summary>
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float GlowDuration;
 
 	/// <summary>
