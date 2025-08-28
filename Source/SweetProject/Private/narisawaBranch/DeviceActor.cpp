@@ -1,5 +1,3 @@
-// Source/SweetProject/Private/narisawaBranch/DeviceActor.cpp
-
 #include "narisawaBranch/DeviceActor.h"
 #include "ASerialLibControllerWin.h"
 #include "WindowsSerial/WindowsSerial.h"
@@ -49,7 +47,6 @@ public:
 			}
 			else
 			{
-				// キューが空なら、CPUを無駄遣いしないように少し待機
 				FPlatformProcess::Sleep(0.01f);
 			}
 		}
