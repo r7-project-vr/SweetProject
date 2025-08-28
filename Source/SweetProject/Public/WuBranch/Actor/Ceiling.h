@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "Ceiling.generated.h"
 
+class UGeometryCollectionComponent;
+class APillar;
+
 UCLASS()
 class SWEETPROJECT_API ACeiling : public AActor
 {
@@ -25,10 +28,32 @@ public:
 
 private:
 
+	/// <summary>
+	/// 柱が壊れた時の処理
+	/// </summary>
+	UFUNCTION()
+	void OnPillarDisappear();
+
+	/// <summary>
+	/// 落下
+	/// </summary>
+	void FallDown();
+
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* Mesh;
+	//UStaticMeshComponent* Mesh;
+	UGeometryCollectionComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere)
 	class UBoxComponent* Collision;
 
+	/// <summary>
+	/// 支えている柱
+	/// </summary>
+	UPROPERTY(EditAnywhere)
+	TArray<TObjectPtr<APillar>> Pillars;
+
+	/// <summary>
+	/// 破壊された柱の数
+	/// </summary>
+	int DisappearedPillarNum;
 };
