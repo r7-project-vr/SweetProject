@@ -6,7 +6,7 @@ public class SweetProject : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Projects" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Projects", "AIModule", "GameplayTasks", "NavigationSystem" });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
     }
