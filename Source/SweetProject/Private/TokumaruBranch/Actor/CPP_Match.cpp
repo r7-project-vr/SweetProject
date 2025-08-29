@@ -2,7 +2,6 @@
 
 
 #include "TokumaruBranch/Actor/CPP_Match.h"
-
 // Sets default values
 ACPP_Match::ACPP_Match()
 {
@@ -41,6 +40,7 @@ void ACPP_Match::StartFire()
 	{
 		FireEffect->ActivateSystem();
 		isFire = true;
+		CheckFireDelegate.Broadcast(isFire);
 	}
 }
 
@@ -50,6 +50,7 @@ void ACPP_Match::StopFire()
 	{
 		FireEffect->DeactivateSystem();
 		isFire = false;
+		CheckFireDelegate.Broadcast(isFire);
 	}
 }
 
@@ -69,5 +70,11 @@ void ACPP_Match::Interact(AActor* Interactor)
 
 void ACPP_Match::BYInteract()
 {
+	//CheckFireDelegate.AddDynamic(this, &ACPP_Match::test);
+}
+
+bool ACPP_Match::GetIsFire() const 
+{
+	return isFire;
 }
 

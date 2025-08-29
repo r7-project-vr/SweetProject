@@ -8,6 +8,10 @@
 #include "GameFramework/Actor.h"
 #include "CPP_Match.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFire, bool,fire);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateCoinDelegate, int, Num);
+
 UCLASS()
 class SWEETPROJECT_API ACPP_Match : public AActor,public ICPP_UinterfaceToIntaract
 {
@@ -45,5 +49,17 @@ public:
 
 	virtual void BYInteract() override;
 
+	/// <summary>
+	/// 火の状態更新を見る
+	/// </summary>
+	UPROPERTY(BlueprintAssignable,Category = "Events")
+	FFire CheckFireDelegate;
+
+
+	/// <summary>
+	/// 今の火の状態を取得
+	/// </summary>
+	/// <returns></returns>
+	bool GetIsFire() const;
 
 };

@@ -1,7 +1,11 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
+
 #include "WuBranch/Actor/Pillar.h"
+//2025.08.29 得丸陽生
+#include "TokumaruBranch/Actor/CPP_Match.h"
+//2025.08.29 得丸陽生 end
 #include "Components/BoxComponent.h"
 #include <WuBranch/Actor/Match.h>
 
@@ -77,28 +81,38 @@ void APillar::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 {
 	if (OtherActor)
 	{
-		if (AMatch* Weapon = Cast<AMatch>(OtherActor))
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Pillar Hit!"));
-			IsBurning = true;
-			//// 攻撃者から攻撃力を貰う
-			//float Attack = Weapon->GetAttackPower();
-			//float DamageAmount = FMath::Clamp(Attack, 0.0f, HP); // 例として10のダメージを与える
-			//HP -= DamageAmount;
 
-			//// 破壊された
-			//if (HP <= 0.0f)
-			//{
-			//	// エフェクト
-
-			//	// エフェクトなどが終わったら消す
-			//	Destroy();
-			//}
-			//else {
-			//	// エフェクト
-
-			//}
+		//2025.08.29 得丸陽生
+		if (ACPP_Match* MatchActor = Cast<ACPP_Match>(OtherActor)) {
+			if (MatchActor->GetIsFire()) {
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Pillar Hit!"));
+				IsBurning = true;
+			}
 		}
+
+		//if (AMatch* Weapon = Cast<AMatch>(OtherActor))
+		//{
+		//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Pillar Hit!"));
+		//	IsBurning = true;
+		//	//// 攻撃者から攻撃力を貰う
+		//	//float Attack = Weapon->GetAttackPower();
+		//	//float DamageAmount = FMath::Clamp(Attack, 0.0f, HP); // 例として10のダメージを与える
+		//	//HP -= DamageAmount;
+
+		//	//// 破壊された
+		//	//if (HP <= 0.0f)
+		//	//{
+		//	//	// エフェクト
+
+		//	//	// エフェクトなどが終わったら消す
+		//	//	Destroy();
+		//	//}
+		//	//else {
+		//	//	// エフェクト
+
+		//	//}
+		//}
+		//2025.08.29 得丸陽生 end
 	}
 }
 
