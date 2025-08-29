@@ -30,6 +30,10 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDisappearDelegate);
+
+	FDisappearDelegate OnDisappearNotify;
+
 private:
 
 	UFUNCTION()

@@ -1,4 +1,4 @@
-using UnrealBuildTool;
+﻿using UnrealBuildTool;
 
 public class SweetProject : ModuleRules
 {
@@ -6,7 +6,19 @@ public class SweetProject : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Projects", "AIModule", "GameplayTasks", "NavigationSystem" });
+        PublicDependencyModuleNames.AddRange(new string[] { 
+            "Core",
+            "CoreUObject",
+            "Engine",
+            "InputCore",
+            "Projects",
+            "AIModule",
+            "GameplayTasks",
+            "NavigationSystem",
+            "KATVRUniversalSDK",
+            "Niagara",
+            "GeometryCollectionEngine"
+        });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
 
