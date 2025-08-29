@@ -94,4 +94,5 @@ private:
 	/// 時間のカウンター
 	/// </summary>
 	float TimeCounter = 0.f;
+
 };

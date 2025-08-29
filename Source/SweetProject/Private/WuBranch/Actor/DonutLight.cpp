@@ -1,6 +1,9 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-
+//2025.08.28 得丸陽生
+#include "TokumaruBranch/Interface/CPP_UinterfaceToIntaract.h"
+#include "TokumaruBranch/Actor/CPP_Match.h"
+//2025.08.28 得丸陽生 end
 #include "WuBranch/Actor/DonutLight.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
@@ -14,7 +17,7 @@ ADonutLight::ADonutLight()
 	, GlowDuration(0.f)
 	, TimeCounter(0.f)
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
@@ -27,7 +30,7 @@ ADonutLight::ADonutLight()
 
 	Collision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
 	Collision->SetupAttachment(DonutMesh);
-	
+
 	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Light"));
 	Light->SetupAttachment(LightMesh);
 	Light->SetIntensityUnits(ELightUnits::Lumens);
@@ -37,7 +40,7 @@ ADonutLight::ADonutLight()
 void ADonutLight::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &ADonutLight::OnFireOverlapBegin);
 	// 初期状態ではライトを非表示にする
 	TurnOffLight();
@@ -52,7 +55,7 @@ void ADonutLight::Tick(float DeltaTime)
 	{
 		TimeCounter -= DeltaTime;
 		UpdateLightIntensity(TimeCounter);
-		if(TimeCounter <= 0.0f)
+		if (TimeCounter <= 0.0f)
 		{
 			// 時間が経過したらライトを消す
 			TurnOffLight();
@@ -64,11 +67,21 @@ void ADonutLight::OnFireOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 {
 	if (OtherActor)
 	{
+
+		//2025.08.28 得丸陽生
 		// 燃やせるものが近づいたら、ライトを点灯させる
-		if (OtherActor->IsA(AWeapon::StaticClass()))
-		{
-			TurnOnLight();
+		if (ACPP_Match* MatchActor = Cast<ACPP_Match>(OtherActor)) {
+			if (MatchActor->GetIsFire()) {
+				TurnOnLight();
+			}
 		}
+
+		// 燃やせるものが近づいたら、ライトを点灯させる
+		//if (OtherActor->IsA(AWeapon::StaticClass()))
+		//{
+		//	TurnOnLight();
+		//}
+		//2025.08.28 得丸陽生 end
 	}
 }
 
