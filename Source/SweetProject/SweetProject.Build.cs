@@ -21,5 +21,7 @@ public class SweetProject : ModuleRules
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
+
+        PublicDependencyModuleNames.Add("ASerialCom");
     }
 }
