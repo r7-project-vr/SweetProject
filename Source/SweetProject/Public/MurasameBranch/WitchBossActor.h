@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Character.h"
 #include "WitchBossActor.generated.h"
 
 UCLASS()
-class SWEETPROJECT_API AWitchBossActor : public AActor
+class SWEETPROJECT_API AWitchBossActor : public ACharacter
 {
 	GENERATED_BODY()
 	
