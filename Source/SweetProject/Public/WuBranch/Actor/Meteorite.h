@@ -38,13 +38,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Shoot();
 
+	/// <summary>
+	/// 消失の通知
+	/// </summary>
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDisappearDelegate);
+	FDisappearDelegate OnDisappearNotify;
+
 private:
 
 	/// <summary>
-	/// ぶつかるの処理
+	/// ぶつかる処理
 	/// </summary>
 	UFUNCTION()
-	void OnCollisionOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnFireBallOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	/// <summary>
 	/// 移動
@@ -65,26 +71,31 @@ private:
 	FVector GetAttackRangeLocation(FVector& OHitNormal);
 
 	/// <summary>
-	/// 
+	/// 攻撃範囲のエフェクトの更新
 	/// </summary>
 	void UpdateAttackRange();
 
 	/// <summary>
+	/// 
+	/// </summary>
+	void NotifyDisappear();
+
+	/// <summary>
 	/// 火球のメッシュ
 	/// </summary>
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* FireBallMesh;
 
 	/// <summary>
 	/// 火球のコリジョン
 	/// </summary>
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	USphereComponent* FireBallCollision;
 
 	/// <summary>
 	/// 火のエフェクト
 	/// </summary>
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UNiagaraComponent> FireEffect;
 
 	/// <summary>
@@ -106,7 +117,6 @@ private:
 	/// <summary>
 	/// 最終位置
 	/// </summary>
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FVector EndPoint;
 
 	/// <summary>

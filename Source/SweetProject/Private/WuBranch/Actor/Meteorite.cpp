@@ -16,8 +16,10 @@ AMeteorite::AMeteorite()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootScene"));
+
 	FireBallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FireBall Mesh"));
-	RootComponent = FireBallMesh;
+	FireBallMesh->SetupAttachment(RootComponent);
 
 	FireBallCollision = CreateDefaultSubobject<USphereComponent>(TEXT("FireBall Collision"));
 	FireBallCollision->SetupAttachment(RootComponent);
@@ -32,13 +34,10 @@ void AMeteorite::BeginPlay()
 	Super::BeginPlay();
 	
 	StartPoint = GetActorLocation();
-	FireBallCollision->OnComponentBeginOverlap.AddDynamic(this, &AMeteorite::OnCollisionOverlapBegin);
-
-	if (EndPoint != FVector::ZeroVector)
-	{
-		DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Red, false, 1000.f, 0, 5.f);
-		MakeAttackRange();
-	}
+	/*if (FireBallCollision)
+		FireBallCollision->OnComponentBeginOverlap.AddDynamic(this, &AMeteorite::OnFireBallOverlapBegin);
+	else
+		UE_LOG(LogTemp, Error, TEXT("Bind BeginOverlap error"));*/
 }
 
 // Called every frame
@@ -68,9 +67,13 @@ void AMeteorite::Shoot()
 	}
 }
 
-void AMeteorite::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AMeteorite::OnFireBallOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (!OtherActor)
+		return;
+
 	CanMove = false;
+	NotifyDisappear();
 	Destroy();
 }
 
@@ -125,12 +128,20 @@ FVector AMeteorite::GetAttackRangeLocation(FVector& OHitNormal)
 
 void AMeteorite::UpdateAttackRange()
 {
-	if (CanMove) 
+	if (CanMove && AttackRangeDynamic)
 	{
 		float Total = FVector::Dist(StartPoint, EndPoint);
 		float Now = FVector::Dist(GetActorLocation(), EndPoint);
 
 		float Percent =FMath::Clamp((Total - Now) / Total, 0, 1);
 		AttackRangeDynamic->SetScalarParameterValue(TEXT("Percent"), Percent);
+	}
+}
+
+void AMeteorite::NotifyDisappear()
+{
+	if (OnDisappearNotify.IsBound())
+	{
+		OnDisappearNotify.Broadcast();
 	}
 }

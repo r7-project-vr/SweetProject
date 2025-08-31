@@ -6,6 +6,9 @@
 #include "AIController.h"
 #include "WitchController.generated.h"
 
+class AMeteorite;
+class USkeletalMeshComponent;
+
 /**
  * 
  */
@@ -21,7 +24,7 @@ public:
 protected:
 
 	virtual void BeginPlay() override;
-	
+
 public:
 
 	virtual void Tick(float DeltaTime) override;
@@ -67,7 +70,7 @@ private:
 	void HandleMoving(float DeltaTime);
 
 	/// <summary>
-	/// 
+	/// 移動完了を通知する
 	/// </summary>
 	void NotifyMovementCompleted();
 
@@ -102,4 +105,5 @@ private:
 	/// </summary>
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float MovementSpeed;
+
 };
