@@ -34,9 +34,9 @@ void AMeteorite::BeginPlay()
 	Super::BeginPlay();
 	
 	StartPoint = GetActorLocation();
-	/*if (FireBallCollision)
+	if (FireBallCollision)
 		FireBallCollision->OnComponentBeginOverlap.AddDynamic(this, &AMeteorite::OnFireBallOverlapBegin);
-	else
+	/*else
 		UE_LOG(LogTemp, Error, TEXT("Bind BeginOverlap error"));*/
 }
 
@@ -74,7 +74,7 @@ void AMeteorite::OnFireBallOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 
 	CanMove = false;
 	NotifyDisappear();
-	Destroy();
+	
 }
 
 void AMeteorite::Move(float DeltaTime)
