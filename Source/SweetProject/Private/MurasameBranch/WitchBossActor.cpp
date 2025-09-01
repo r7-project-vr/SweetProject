@@ -11,11 +11,13 @@ AWitchBossActor::AWitchBossActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	SetRootComponent(Root);
+	//Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	//SetRootComponent(Root);
 
-	WitchMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WitchMesh"));
-	WitchMesh->SetupAttachment(Root);
+	// 2025.08.30 ウー start
+	//WitchMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WitchMesh"));
+	//WitchMesh->SetupAttachment(Root);
+	// 2025.08.30 ウー end
 	//モデルの向きに沿って調整する可能性ある
 
 
