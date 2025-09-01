@@ -347,6 +347,28 @@ public:
 		}
 		return 100;
 	}
+
+	// KAT Device Calibrate
+	void Calibrate(const char* sn = nullptr)
+	{
+		if (handle() != nullptr)
+		{
+			if (calibrateFunc == nullptr)
+			{
+				using funcType = void(const char*);
+				calibrateFunc = reinterpret_cast<funcType*>(FPlatformProcess::GetDllExport(handle(), TEXT("Calibrate")));
+			}
+
+			if (calibrateFunc != nullptr)
+			{
+				calibrateFunc(sn);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("Cannot Calibrate"));
+			}
+		}
+	}
 };
 
 #pragma pack(pop)

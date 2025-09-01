@@ -4,6 +4,8 @@
 #include "TokumaruBranch/Actor/CPP_Match.h"
 // Sets default values
 ACPP_Match::ACPP_Match()
+	:
+	countDown(matchFinishSecond)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -32,6 +34,14 @@ void ACPP_Match::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (isFire) {
+		countDown -= (1 * DeltaTime);
+		if (countDown <= 0) {
+			isFire = false;
+			StopFire();
+			countDown = matchFinishSecond;
+		}
+	}
 }
 
 void ACPP_Match::StartFire()

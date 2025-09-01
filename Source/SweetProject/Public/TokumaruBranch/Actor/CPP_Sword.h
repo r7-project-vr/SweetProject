@@ -29,7 +29,10 @@ public:
 
 	virtual void BYInteract() override;
 
-	UPROPERTY(EditAnywhere)
+	/// <summary>
+	/// マッチによって既に強化されているか否か
+	/// </summary>
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Power")
 	bool alreadyBaf = false;
 
 
@@ -39,7 +42,27 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* AttackCollision;
 
+	/// <summary>
+	/// 攻撃力
+	/// </summary>
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Power")
+	float power = 50.0f;
+
+	/// <summary>
+	/// マッチに火がついている状態なら自信を強化する
+	/// </summary>
+	/// <param name="OtherActor"></param>
 	UFUNCTION(BlueprintCallable)
-	void OnAttackCollisionBeginOverlap(AActor* OtherActor);
+	void OnCollisionBeginOverlapToMatch(AActor* OtherActor);
+
+	/// <summary>
+	/// 対象がマッチか確認する
+	/// </summary>
+	/// <param name="OtherActor"></param>
+	/// <returns></returns>
+	UFUNCTION(BlueprintCallable)
+	bool CheckMatch(AActor* OtherActor);
+
+	ICPP_UinterfaceToIntaract* interacter;
 
 };

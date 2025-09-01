@@ -36,6 +36,12 @@ public:
 	/// </summary>
 	void StopMove();
 
+	/// <summary>
+	/// KATVRのキャリブレーションを実行
+	/// </summary>
+	UFUNCTION(BlueprintCallable)
+	void DoCalibration();
+
 private:
 
 	/// <summary>
