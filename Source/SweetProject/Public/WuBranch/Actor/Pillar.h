@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Pillar.generated.h"
 
+class UNiagaraComponent;
+
 UCLASS()
 class SWEETPROJECT_API APillar : public AActor
 {
@@ -28,8 +30,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetHP() const;
 
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
-
+	/// <summary>
+	/// 破壊されたの通知
+	/// </summary>
+	/// <param name=""></param>
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDisappearDelegate);
 
 	FDisappearDelegate OnDisappearNotify;
@@ -46,6 +50,11 @@ private:
 	void Burning(float DeltaTime);
 
 	/// <summary>
+	/// 破壊されたっと連絡する
+	/// </summary>
+	void NotifyDisappear();
+
+	/// <summary>
 	/// メッシュ
 	/// </summary>
 	UPROPERTY(VisibleAnywhere, Category = "Pillar")
@@ -56,6 +65,12 @@ private:
 	/// </summary>
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess="true"))
 	class UBoxComponent* Collision;
+
+	/// <summary>
+	/// 火のエフェクト
+	/// </summary>
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UNiagaraComponent> FireEffect;
 
 	/// <summary>
 	/// 最大HP

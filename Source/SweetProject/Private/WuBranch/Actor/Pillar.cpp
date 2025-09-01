@@ -8,6 +8,7 @@
 //2025.08.29 得丸陽生 end
 #include "Components/BoxComponent.h"
 #include <WuBranch/Actor/Match.h>
+#include "NiagaraComponent.h"
 
 // Sets default values
 APillar::APillar()
@@ -22,6 +23,10 @@ APillar::APillar()
 
 	PillarMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pillar Mesh"));
 	PillarMesh->SetupAttachment(RootComponent);
+
+	FireEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Fire Effect"));
+	FireEffect->SetupAttachment(RootComponent);
+	FireEffect->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -37,6 +42,10 @@ void APillar::Initialize()
 {
 	HP = MaxHP;
 	IsBurning = false;
+	if (FireEffect)
+	{
+		FireEffect->Activate(false);
+	}
 }
 
 // Called every frame
@@ -53,28 +62,6 @@ void APillar::Tick(float DeltaTime)
 float APillar::GetHP() const
 {
 	return HP;
-}
-
-float APillar::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-	float DamageToApply = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
-	DamageToApply = FMath::Clamp(DamageToApply, 0.0f, HP);
-	HP -= DamageToApply;
-
-	// 破壊された
-	if (HP <= 0.0f)
-	{
-		// エフェクト
-
-		// エフェクトなどが終わったら消す
-		Destroy();
-	}
-	else {
-		// エフェクト
-
-	}
-	return 0.0f;
 }
 
 void APillar::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -124,14 +111,24 @@ void APillar::Burning(float DeltaTime)
 	FString txt = FString::Printf(TEXT("Pillar Burning! HP: %lf"), HP);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, txt);
 	// 燃やされているエフェクト
-	
+	if (FireEffect)
+	{
+		FireEffect->Activate(true);
+	}
 
 	// 破壊された
 	if (HP <= 0.0f)
 	{
+		NotifyDisappear();
 		// エフェクト
 
 		// エフェクトなどが終わったら消す
 		Destroy();
 	}
+}
+
+void APillar::NotifyDisappear()
+{
+	if (OnDisappearNotify.IsBound())
+		OnDisappearNotify.Broadcast();
 }

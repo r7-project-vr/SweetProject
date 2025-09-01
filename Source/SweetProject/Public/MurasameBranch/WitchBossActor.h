@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Character.h"
 #include "WitchBossActor.generated.h"
 
 UCLASS()
-class SWEETPROJECT_API AWitchBossActor : public AActor
+class SWEETPROJECT_API AWitchBossActor : public ACharacter
 {
 	GENERATED_BODY()
 	
@@ -16,11 +16,13 @@ public:
 	AWitchBossActor();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USceneComponent* Root;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	USkeletalMeshComponent* WitchMesh;
+	// 2025.08.30 ウー start
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	//USceneComponent* Root;
+	
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	//USkeletalMeshComponent* WitchMesh;
+	// 2025.08.30 ウー end
 
 	//魔女顔向きZ軸のみか
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Witch|Facing")
