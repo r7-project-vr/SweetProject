@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class UNiagaraComponent;
+class UParticleSystemComponent;
 
 UCLASS()
 class SWEETPROJECT_API AMeteorite : public AActor
@@ -114,6 +115,12 @@ private:
 	/// </summary>
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UNiagaraComponent> FireEffect;
+
+	/// <summary>
+	/// 爆発のエフェクト
+	/// </summary>
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* ExplosionEffect;
 
 	/// <summary>
 	/// 目標

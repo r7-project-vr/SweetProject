@@ -6,6 +6,7 @@
 #include "NiagaraComponent.h"
 #include <Kismet/GameplayStatics.h>
 #include "GameFramework/Character.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AMeteorite::AMeteorite()
@@ -27,6 +28,9 @@ AMeteorite::AMeteorite()
 
 	FireEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Fire Effect"));
 	FireEffect->SetupAttachment(RootComponent);
+
+	ExplosionEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Explosion Effect"));
+	ExplosionEffect->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
