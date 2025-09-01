@@ -51,10 +51,8 @@ AMeteorite* USkillFireballComponent::SpawnFireBall(FVector Location, FRotator Ro
 	if (FireBall)
 	{
 		CurrentFireBall = FireBall;
+		CurrentFireBall->SetAttackRangeRadius(AttackRadius);
 		CurrentFireBall->OnDisappearNotify.AddDynamic(this, &USkillFireballComponent::OnFireBallDisappear);
-	}
-	else
-	{
 	}
 	return FireBall;
 }
@@ -63,6 +61,11 @@ void USkillFireballComponent::Shoot()
 {
 	if(CurrentFireBall)
 		CurrentFireBall->Shoot();
+}
+
+float USkillFireballComponent::GetAttackRadius() const
+{
+	return AttackRadius;
 }
 
 void USkillFireballComponent::StartLockFireBall()

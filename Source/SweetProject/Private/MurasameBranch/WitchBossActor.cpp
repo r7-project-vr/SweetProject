@@ -108,6 +108,7 @@ void AWitchBossActor::UseFireball(const FVector& TargetLocation, const FVector& 
 	FVector NearWitchLocation, NearPlayerLocation;
 	if (LocationSpawner)
 	{
+		LocationSpawner->SetGroundRadius(SkillFireball->GetAttackRadius());
 		LocationSpawner->GetStartAndEndLocation(NearWitchLocation, NearPlayerLocation);
 	}
 

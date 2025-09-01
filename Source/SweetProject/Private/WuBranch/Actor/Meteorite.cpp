@@ -67,6 +67,11 @@ void AMeteorite::Shoot()
 	}
 }
 
+void AMeteorite::SetAttackRangeRadius(float Radius)
+{
+	AttackRangeRadius = Radius;
+}
+
 void AMeteorite::OnFireBallOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!OtherActor)
@@ -101,7 +106,7 @@ void AMeteorite::MakeAttackRange()
 	{
 		AttackRangeDynamic->SetScalarParameterValue(TEXT("Percent"), 0);
 
-		FVector Size = FVector(1, 500, 500);
+		FVector Size = FVector(1, AttackRangeRadius, AttackRangeRadius);
 		UDecalComponent* Hole = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), AttackRangeDynamic, Size, MaterialPoint, HitNormal.Rotation(), 0.f);
 	}
 }

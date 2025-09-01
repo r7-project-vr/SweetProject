@@ -44,6 +44,12 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDisappearDelegate);
 	FDisappearDelegate OnDisappearNotify;
 
+	/// <summary>
+	/// 攻撃範囲の半径を設定
+	/// </summary>
+	/// <param name="Radius">半径</param>
+	void SetAttackRangeRadius(float Radius);
+
 private:
 
 	/// <summary>
@@ -131,8 +137,8 @@ private:
 	float Speed;
 
 	/// <summary>
-	/// 攻撃範囲
+	/// 攻撃範囲の半径、1は1cm
 	/// </summary>
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float AttackRangeRadius;
+
 };
