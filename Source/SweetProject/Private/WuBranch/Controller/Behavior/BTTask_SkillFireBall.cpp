@@ -2,13 +2,8 @@
 
 
 #include "WuBranch/Controller/Behavior/BTTask_SkillFireBall.h"
-#include "WuBranch/Controller/WitchController.h"
-#include "MurasameBranch/NavEnterSpawner.h"
-#include "Kismet/GameplayStatics.h"
-#include "GameFramework/Character.h"
-#include "Components/SkeletalMeshComponent.h"
-#include "WuBranch/Actor/Meteorite.h"
-#include "WuBranch/Actor/Component/SkillFireballComponent.h"
+#include "AIController.h"
+#include "MurasameBranch/WitchBossActor.h"
 
 UBTTask_SkillFireBall::UBTTask_SkillFireBall()
 {
@@ -22,40 +17,15 @@ EBTNodeResult::Type UBTTask_SkillFireBall::ExecuteTask(UBehaviorTreeComponent& O
 	AAIController* Controller = OwnerComp.GetAIOwner();
 	if (!Controller)
 		return EBTNodeResult::Failed;
-
-	AWitchController* AIController = Cast<AWitchController>(Controller);
-	if (!AIController)
-		return EBTNodeResult::Failed;
 	
 	ACharacter* MyCharacter = Controller->GetCharacter();
 	if (!MyCharacter)
 		return EBTNodeResult::Failed;
 
-	USkeletalMeshComponent* Mesh = MyCharacter->GetMesh();
-	if(!Mesh || !Mesh->DoesSocketExist(FireballSocketName))
+	if (AWitchBossActor* Witch = Cast<AWitchBossActor>(MyCharacter))
+		Witch->UseFireball();
+	else
 		return EBTNodeResult::Failed;
-
-	FVector SocketLocation = Mesh->GetSocketLocation(FireballSocketName);
-
-	// 暫定
-	AActor* Spawner = UGameplayStatics::GetActorOfClass(GetWorld(), ANavEnterSpawner::StaticClass());
-	if (!Spawner)
-	{
-		Spawner = GetWorld()->SpawnActor(ANavEnterSpawner::StaticClass());
-	}
-
-	FVector NearWitchLocation, NearPlayerLocation;
-	if (ANavEnterSpawner* LocationSpawner = Cast<ANavEnterSpawner>(Spawner))
-	{
-		LocationSpawner->GetStartAndEndLocation(NearWitchLocation, NearPlayerLocation);
-	}
-
-	if (USkillFireballComponent* FireballComp = MyCharacter->FindComponentByClass<USkillFireballComponent>())
-	{
-		AMeteorite* FireBall = FireballComp->SpawnFireBall(SocketLocation);
-		if (FireBall)
-			FireBall->SetTargetPoint(NearPlayerLocation);
-	}
 
 	return EBTNodeResult::Succeeded;
 }
