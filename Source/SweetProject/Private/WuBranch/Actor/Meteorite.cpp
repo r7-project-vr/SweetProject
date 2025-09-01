@@ -33,7 +33,6 @@ void AMeteorite::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	StartPoint = GetActorLocation();
 	if (FireBallCollision)
 		FireBallCollision->OnComponentBeginOverlap.AddDynamic(this, &AMeteorite::OnFireBallOverlapBegin);
 	/*else
@@ -57,6 +56,7 @@ void AMeteorite::SetTargetPoint(FVector Point)
 
 void AMeteorite::Shoot()
 {
+	StartPoint = GetActorLocation();
 	if ((int)FVector::Dist(StartPoint, EndPoint) != 0)
 	{
 		// 向き変更
