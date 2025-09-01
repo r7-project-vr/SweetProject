@@ -45,6 +45,12 @@ public:
 	FDisappearDelegate OnDisappearNotify;
 
 	/// <summary>
+	/// 目標を設定
+	/// </summary>
+	/// <param name="Target">目標</param>
+	void SetTarget(TWeakObjectPtr<ACharacter> Target);
+
+	/// <summary>
 	/// 攻撃範囲の半径を設定
 	/// </summary>
 	/// <param name="Radius">半径</param>
@@ -82,7 +88,12 @@ private:
 	void UpdateAttackRange();
 
 	/// <summary>
-	/// 
+	/// ダメージ計算
+	/// </summary>
+	void HandleDamage();
+
+	/// <summary>
+	/// 消滅の通知
 	/// </summary>
 	void NotifyDisappear();
 
@@ -103,6 +114,11 @@ private:
 	/// </summary>
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UNiagaraComponent> FireEffect;
+
+	/// <summary>
+	/// 目標
+	/// </summary>
+	TWeakObjectPtr<ACharacter> CurrentTarget;
 
 	/// <summary>
 	/// 攻撃範囲のマテリアル

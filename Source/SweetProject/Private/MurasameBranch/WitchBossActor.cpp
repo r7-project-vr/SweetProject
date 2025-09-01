@@ -5,6 +5,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 // 2025.09.01 ウー start
+#include "TokumaruBranch/Pawn/CPP_TVRPawn.h"
 #include "MurasameBranch/NavEnterSpawner.h"
 #include "Kismet/GameplayStatics.h"
 #include "WuBranch/Actor/Component/SkillFireballComponent.h"
@@ -39,12 +40,17 @@ void AWitchBossActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// 2025.09.01 ウー start
+	// プレレイヤーをゲット
+	PlayerOverride = UGameplayStatics::GetActorOfClass(GetWorld(), ACPP_TVRPawn::StaticClass());
+
 	AActor* Spawner = UGameplayStatics::GetActorOfClass(GetWorld(), ANavEnterSpawner::StaticClass());
 	if (!Spawner)
 	{
 		Spawner = GetWorld()->SpawnActor(ANavEnterSpawner::StaticClass());
 	}
 	LocationSpawner = Cast<ANavEnterSpawner>(Spawner);
+	// 2025.09.01 ウー end
 }
 
 // Called every frame
@@ -115,6 +121,11 @@ void AWitchBossActor::UseFireball(const FVector& TargetLocation, const FVector& 
 	// 火球を生成する
 	AMeteorite* FireBall = SkillFireball->SpawnFireBall(SocketLocation);
 	if (FireBall)
+	{
 		FireBall->SetTargetPoint(NearPlayerLocation);
+		ACharacter* Player = Cast<ACharacter>(PlayerOverride);
+		if(Player)
+			FireBall->SetTarget(Player);
+	}
 }
 // 2025.09.01 ウー end

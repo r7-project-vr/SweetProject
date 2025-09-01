@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "NiagaraComponent.h"
 #include <Kismet/GameplayStatics.h>
+#include "GameFramework/Character.h"
 
 // Sets default values
 AMeteorite::AMeteorite()
@@ -67,6 +68,11 @@ void AMeteorite::Shoot()
 	}
 }
 
+void AMeteorite::SetTarget(TWeakObjectPtr<ACharacter> Target)
+{
+	CurrentTarget = Target;
+}
+
 void AMeteorite::SetAttackRangeRadius(float Radius)
 {
 	AttackRangeRadius = Radius;
@@ -78,8 +84,10 @@ void AMeteorite::OnFireBallOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 		return;
 
 	CanMove = false;
-	NotifyDisappear();
+	// 爆発エフェクト
 	
+	// ダメージ判定
+	HandleDamage();
 }
 
 void AMeteorite::Move(float DeltaTime)
@@ -141,6 +149,21 @@ void AMeteorite::UpdateAttackRange()
 		float Percent =FMath::Clamp((Total - Now) / Total, 0, 1);
 		AttackRangeDynamic->SetScalarParameterValue(TEXT("Percent"), Percent);
 	}
+}
+
+void AMeteorite::HandleDamage()
+{
+	if (!CurrentTarget.IsValid())
+		return;
+
+	ACharacter* Target = CurrentTarget.Get();
+	FVector MyLocation = GetActorLocation();
+	FVector TargetLocation = Target->GetActorLocation();
+	// 攻撃範囲外
+	if ((TargetLocation - MyLocation).SizeSquared() > FMath::Square(AttackRangeRadius))
+		return;
+
+	//CurrentTarget->TakeDamage();
 }
 
 void AMeteorite::NotifyDisappear()
