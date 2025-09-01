@@ -9,15 +9,26 @@
 #include "GameFramework/Pawn.h"
 #include "CPP_TVRPawn.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDamage, bool, damage);
 UCLASS()
 class SWEETPROJECT_API ACPP_TVRPawn : public APawn
 {
 	GENERATED_BODY()
 
+	virtual float TakeDamage(
+		float DamageAmount,
+		const FDamageEvent& DamageEvent,
+		AController* EventInstigator,
+		AActor* DamageCauser
+	) override;
 public:
 	// Sets default values for this pawn's properties
 	ACPP_TVRPawn();
 
+	/// <summary>
+    /// しゃがみ判定になるための座標差
+    /// </summary>
 	UPROPERTY(EditAnywhere, Category = "Pickup")
 	float distanceToCrouching = 0.0f;
 
@@ -41,9 +52,8 @@ protected:
 	UCameraComponent* MyCamera;
 
 	/// <summary>
-    /// しゃがみ判定になるための座標差
+    /// ゲーム開始時のカメラの座標
     /// </summary>
-	UPROPERTY(EditAnywhere, Category = "Pickup")
 	float InitialCameraZ = 10.0f;
 
 	/// <summary>
@@ -70,16 +80,57 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void EquipSword();
 
-	//すでに装備しているか
+	/// <summary>
+	/// 既に剣を装備しているかどうか
+	/// </summary>
 	UPROPERTY(BlueprintReadWrite, Category = "Pickup")
 	bool alreadyEquipSword = false;
 
-	// 判定距離
+	/// <summary>
+	/// 剣を拾う場所からどれくらいの距離まで拾えるか
+	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Pickup")
 	float pickupRange = 200.0f; // cm単位
 
+	/// <summary>
+	/// ゲーム開始時のカメラの高さを保存する
+	/// </summary>
 	void InitCameraPosition();
 
+	/// <summary>
+	/// 攻撃を受けた時の通知用
+	/// </summary>
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FDamage damageDelegate;
+
+	/// <summary>
+	/// 攻撃を受けたかどうか
+	/// </summary>
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool damageHit = false;
+
+	/// <summary>
+	/// ダメージを受けて何秒間怯むか
+	/// </summary>
+	UPROPERTY(EditAnywhere,Category = "damage")
+	float stanSecend = 1.0f;
+
+	/// <summary>
+	/// 怯み解除タイマー数値減算用変数
+	/// </summary>
+	float currentStanSecond = 0.0f;
+
+	/// <summary>
+	/// コリジョンの立っている状態の高さ
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "heighter")
+	float maxCollisionHeight = 160.0f;
+
+	/// <summary>
+	/// コリジョンのしゃがんでいる状態の高さ
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "heighter")
+	float minCollisionHeight = 80.0f;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

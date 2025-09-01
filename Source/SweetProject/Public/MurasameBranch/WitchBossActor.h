@@ -16,11 +16,13 @@ public:
 	AWitchBossActor();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USceneComponent* Root;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	USkeletalMeshComponent* WitchMesh;
+	// 2025.08.30 ウー start
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	//USceneComponent* Root;
+	
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	//USkeletalMeshComponent* WitchMesh;
+	// 2025.08.30 ウー end
 
 	//魔女顔向きZ軸のみか
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Witch|Facing")

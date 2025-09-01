@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/SceneComponent.h"
 #include "KATMoverComponent.generated.h"
 
 class KATSDKWarpper;
 class UCameraComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SWEETPROJECT_API UKATMoverComponent : public UActorComponent
+class SWEETPROJECT_API UKATMoverComponent : public USceneComponent
 {
 	GENERATED_BODY()
 
@@ -35,6 +35,12 @@ public:
 	/// 移動停止
 	/// </summary>
 	void StopMove();
+
+	/// <summary>
+	/// KATVRのキャリブレーションを実行
+	/// </summary>
+	UFUNCTION(BlueprintCallable)
+	void DoCalibration();
 
 private:
 

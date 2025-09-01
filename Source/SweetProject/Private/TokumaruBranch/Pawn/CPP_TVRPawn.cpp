@@ -5,8 +5,20 @@
 #include "TimerManager.h"
 #include <Kismet/GameplayStatics.h>
 
+float ACPP_TVRPawn::TakeDamage(float DamageAmount, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+
+	if (!damageHit) {
+		damageHit = true;
+		damageDelegate.Broadcast(damageHit);
+	}
+	return 0.0f;
+}
+
 // Sets default values
 ACPP_TVRPawn::ACPP_TVRPawn()
+	:
+	currentStanSecond(stanSecend)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -67,6 +79,15 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (damageHit) {
+		currentStanSecond -= 1 * DeltaTime;
+		if (currentStanSecond <= 0.0f) {
+			damageHit = false;
+			damageDelegate.Broadcast(damageHit);
+			currentStanSecond = stanSecend;
+		}
+	}
+
 	if (MyCapsuleComp && MyCamera) {
 
 		float CurrentZ = MyCamera->GetComponentLocation().Z;
@@ -76,7 +97,7 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 		{
 			// カプセルの高さ変更
 			if (!isCrouching) {
-				SetCapsuleHeight(44.0f);// しゃがみ用サイズ
+				SetCapsuleHeight(minCollisionHeight);// しゃがみ用サイズ
 				isCrouching = true;
 			}
 			if (!alreadyEquipSword) {
@@ -86,11 +107,12 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 		else
 		{
 			if (isCrouching) {
-				SetCapsuleHeight(88.0f); // 通常サイズ
+				SetCapsuleHeight(maxCollisionHeight); // 通常サイズ
 				isCrouching = false;
 			}
 		}
 	}
+
 }
 
 // Called to bind functionality to input

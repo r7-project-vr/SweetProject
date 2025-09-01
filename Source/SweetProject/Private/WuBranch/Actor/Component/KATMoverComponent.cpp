@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "WuBranch/Actor/Component/KATMoverComponent.h"
@@ -14,7 +14,6 @@ UKATMoverComponent::UKATMoverComponent()
 
 	// ...
 }
-
 
 // Called when the game starts
 void UKATMoverComponent::BeginPlay()
@@ -34,6 +33,7 @@ void UKATMoverComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+	HandleKATVRInput(DeltaTime);
 }
 
 void UKATMoverComponent::StartMove()
@@ -60,6 +60,8 @@ void UKATMoverComponent::HandleKATVRInputWalk(float DeltaTime)
 
 	Vector3 MoveSpeed = KATDataHandler->GetWalkStatus(nullptr).treadMillData.moveSpeed;
 
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Move: %s"), *Vector3::toFVector(MoveSpeed).ToString()));
+
 	float MoveAmount = MoveSpeed.z;
 	auto cameraForwardVector = FVector(VRCamera->GetForwardVector().X, VRCamera->GetForwardVector().Y, 0).GetSafeNormal();
 	//FootstepCounter += FMath::Abs(DeltaTime * NowSpeed * MoveAmount);
@@ -77,7 +79,7 @@ void UKATMoverComponent::HandleKATVRRotator()
 
 void UKATMoverComponent::RotateCharacterByFQuat(FQuat targetQuat, float duration)
 {
-	/*if (!bCanRotate) return;
+	//if (!bCanRotate) return;
 
 	CurrentRotator = targetQuat.Rotator();
 	FRotator DeltaRotation = CurrentRotator - PreRotator;
@@ -86,12 +88,25 @@ void UKATMoverComponent::RotateCharacterByFQuat(FQuat targetQuat, float duration
 
 	FRotator CharacterTargetRotator = GetOwner()->GetActorRotation() + DeltaRotation;
 
-	FRotator VROffsetRotator = VROffset->GetRelativeRotation() - DeltaRotation;
+	FRotator VROffsetRotator = GetRelativeRotation() - DeltaRotation;
 
 	GetOwner()->SetActorRotation(CharacterTargetRotator);
 
-	VROffset->SetRelativeRotation(VROffsetRotator);
+	SetRelativeRotation(VROffsetRotator);
 
-	PreRotator = CurrentRotator;*/
+	PreRotator = CurrentRotator;
+}
+
+void UKATMoverComponent::DoCalibration()
+{
+	if (KATDataHandler != nullptr)
+	{
+		KATDataHandler->Calibrate(nullptr);
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("KATVR Calibration"));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("KATDataHandler is not initialized"));
+	}
 }
 

@@ -21,6 +21,9 @@ public:
 	// Sets default values for this actor's properties
 	ACPP_Match();
 
+	/// <summary>
+	/// 火がついてるかどうか
+	/// </summary>
 	UPROPERTY(BlueprintReadWrite)
 	bool isFire = false;
 
@@ -61,5 +64,16 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool GetIsFire() const;
+
+	/// <summary>
+	/// マッチが何秒で消えるか
+	/// </summary>
+	UPROPERTY(EditAnywhere)
+	float matchFinishSecond = 0.0f;
+
+	/// <summary>
+	/// マッチ消火タイマー数値減算用変数
+	/// </summary>
+	float countDown = 0.0f;
 
 };

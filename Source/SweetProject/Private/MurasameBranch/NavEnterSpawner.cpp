@@ -159,8 +159,8 @@ void ANavEnterSpawner::GenerateOnce()
 
 	// DebugOutputテスト用
 	DrawDebugSphere(W, LastStartPoint, 14.f, 12, FColor::Red, false, 6.f);
-	DrawDebugSphere(W, LastEndPoint, 14.f, 12, FColor::Green, false, 6.f);
-	DrawDebugLine(W, LastStartPoint, LastEndPoint, FColor::Yellow, false, 6.f, 0, 1.5f);
+	DrawDebugSphere(W, LastEndPoint, 14.f, 12, FColor::Green, false, 12.f);
+	DrawDebugLine(W, LastStartPoint, LastEndPoint, FColor::Yellow, false, 6.f, 0, 15.f);
 	DrawDebugString(W, LastStartPoint + FVector(0, 0, 20),
 		FString::Printf(TEXT("Start %s"), *LastStartPoint.ToCompactString()),
 		nullptr, FColor::Red, 6.f, true);
@@ -176,6 +176,49 @@ void ANavEnterSpawner::GenerateOnce()
 				*LastStartPoint.ToCompactString(), *LastEndPoint.ToCompactString())
 		);
 	}
+}
+
+void ANavEnterSpawner::GetStartAndEndLocation(FVector& ONearWitch, FVector& ONearPlayer)
+{
+	UWorld* W = GetWorld();
+	if (!W) return;
+
+	AActor* Player = ResolvePlayerActor();
+	if (!IsValid(Player))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[NavEnterSpawner] Player見つけていない、PlayerClass指定せよ"));
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(
+				-1, 5.f, FColor::Red,
+				TEXT("NavEnterSpawner: Player見つけていない（ PlayerClass または GetPlayerPawn(0)　チャックせよ）"));
+		}
+		return;
+	}
+
+	LastEndPoint = PickGroundPointNearPlayer(Player);
+	LastStartPoint = PickAirPointUnderWitch();
+
+	ONearWitch = LastStartPoint;
+	ONearPlayer = LastEndPoint;
+
+	// DebugOutputテスト用
+	DrawDebugSphere(W, LastStartPoint, 14.f, 12, FColor::Red, false, 6.f);
+	DrawDebugSphere(W, LastEndPoint, 14.f, 12, FColor::Green, false, 6.f);
+	DrawDebugLine(W, LastStartPoint, LastEndPoint, FColor::Yellow, false, 6.f, 0, 1.5f);
+	DrawDebugString(W, LastStartPoint + FVector(0, 0, 20),
+		FString::Printf(TEXT("Start %s"), *LastStartPoint.ToCompactString()),
+		nullptr, FColor::Red, 6.f, true);
+	DrawDebugString(W, LastEndPoint + FVector(0, 0, 20),
+		FString::Printf(TEXT("End %s"), *LastEndPoint.ToCompactString()),
+		nullptr, FColor::Green, 6.f, true);
+
+
+	GEngine->AddOnScreenDebugMessage(
+		-1, 4.f, FColor::Cyan,
+		FString::Printf(TEXT("Start:%s  End:%s"),
+		*LastStartPoint.ToCompactString(), *LastEndPoint.ToCompactString())
+	);
 }
 
 // Version 1.1
