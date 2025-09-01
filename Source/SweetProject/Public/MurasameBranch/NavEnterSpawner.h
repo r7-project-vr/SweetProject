@@ -50,8 +50,6 @@ protected:
 	bool bAutoRunOnBeginPlay = true;
 
 
-
-
 	// //新規内容
 	// //時間間隔
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn|Loop")
@@ -120,7 +118,14 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Spawn|Last")
 	FVector LastEndPoint;
 
+	// 2025.08.30 ウー start
 
+	/// <summary>
+	/// 二つの(魔女とプレレイヤーの)近くの位置をゲット
+	/// </summary>
+	/// <param name="ONearWitch">魔女の位置</param>
+	/// <param name="ONearPlayer">プレレイヤーの位置</param>
+	void GetStartAndEndLocation(FVector& ONearWitch, FVector& ONearPlayer);
 
-
+	// 2025.08.30 ウー end
 };
