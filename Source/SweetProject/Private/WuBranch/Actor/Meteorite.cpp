@@ -163,7 +163,8 @@ void AMeteorite::HandleDamage()
 	if ((TargetLocation - MyLocation).SizeSquared() > FMath::Square(AttackRangeRadius))
 		return;
 
-	//CurrentTarget->TakeDamage();
+	// ダメージを与える
+	UGameplayStatics::ApplyDamage(Target, 0.0f, nullptr, this, UDamageType::StaticClass());
 }
 
 void AMeteorite::NotifyDisappear()
