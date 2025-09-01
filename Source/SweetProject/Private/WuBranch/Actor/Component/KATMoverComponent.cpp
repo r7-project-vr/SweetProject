@@ -15,7 +15,6 @@ UKATMoverComponent::UKATMoverComponent()
 	// ...
 }
 
-
 // Called when the game starts
 void UKATMoverComponent::BeginPlay()
 {
@@ -96,5 +95,18 @@ void UKATMoverComponent::RotateCharacterByFQuat(FQuat targetQuat, float duration
 	SetRelativeRotation(VROffsetRotator);
 
 	PreRotator = CurrentRotator;
+}
+
+void UKATMoverComponent::DoCalibration()
+{
+	if (KATDataHandler != nullptr)
+	{
+		KATDataHandler->Calibrate(nullptr);
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("KATVR Calibration"));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("KATDataHandler is not initialized"));
+	}
 }
 
