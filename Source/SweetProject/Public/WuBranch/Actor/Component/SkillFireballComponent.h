@@ -39,6 +39,12 @@ public:
 	/// </summary>
 	void Shoot();
 
+	/// <summary>
+	/// 攻撃範囲の半径をゲット
+	/// </summary>
+	/// <returns>攻撃範囲の半径</returns>
+	float GetAttackRadius() const;
+
 private:
 
 	/// <summary>
@@ -51,6 +57,12 @@ private:
 	/// 生成した火球
 	/// </summary>
 	AMeteorite* CurrentFireBall;
+
+	/// <summary>
+	/// 攻撃範囲の半径、1は1cm
+	/// </summary>
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float AttackRadius;
 
 #pragma region Lock
 public:

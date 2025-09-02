@@ -40,4 +40,56 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Witch|Facing")
 	void SetYawOnly(bool bInYawOnly) { bYawOnly = bInYawOnly; }
 
+	// 2025.09.01 ウー start
+#pragma region Fireball
+
+public:
+
+	/// <summary>
+	/// 火球を発射
+	/// </summary>
+	void Shoot();
+
+	/// <summary>
+	/// 攻撃しているか
+	/// </summary>
+	bool GetIsAttack() const;
+
+	/// <summary>
+	/// 攻撃完了
+	/// </summary>
+	void CompleteAttack();
+
+	/// <summary>
+	/// 火球を使う
+	/// </summary>
+	/// <param name="TargetLocation">目標位置</param>
+	/// <param name="TargetLocation">開始位置、ないなら(0, 0, 0)</param>
+	void UseFireball(const FVector& TargetLocation = FVector::ZeroVector, const FVector& StartLocation = FVector::ZeroVector);
+
+private:
+	/// <summary>
+	/// スキル：火球
+	/// </summary>
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class USkillFireballComponent* SkillFireball;
+
+	/// <summary>
+	/// 位置生成するもの
+	/// </summary>
+	class ANavEnterSpawner* LocationSpawner;
+
+	/// <summary>
+	/// 火球のスタート位置のソケット名
+	/// </summary>
+	UPROPERTY(EditDefaultsOnly, Category = "Witch", meta = (AllowPrivateAccess = "true"))
+	FName FireballSocketName;
+
+	/// <summary>
+	/// 攻撃のフラグ
+	/// </summary>
+	bool IsAttack;
+#pragma endregion
+	// 2025.09.01 ウー end
+
 };

@@ -4,9 +4,18 @@
 #include "MurasameBranch/WitchBossActor.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+// 2025.09.01 ウー start
+#include "TokumaruBranch/Pawn/CPP_TVRPawn.h"
+#include "MurasameBranch/NavEnterSpawner.h"
+#include "Kismet/GameplayStatics.h"
+#include "WuBranch/Actor/Component/SkillFireballComponent.h"
+#include "WuBranch/Actor/Meteorite.h"
+// 2025.09.01 ウー end
 
 // Sets default values
 AWitchBossActor::AWitchBossActor()
+	: FireballSocketName("")
+	, IsAttack(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -18,6 +27,9 @@ AWitchBossActor::AWitchBossActor()
 	//WitchMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WitchMesh"));
 	//WitchMesh->SetupAttachment(Root);
 	// 2025.08.30 ウー end
+	// 2025.09.01 ウー start
+	SkillFireball = CreateDefaultSubobject<USkillFireballComponent>(TEXT("Skill Fireball"));
+	// 2025.09.01 ウー end
 	//モデルの向きに沿って調整する可能性ある
 
 
@@ -28,6 +40,17 @@ void AWitchBossActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// 2025.09.01 ウー start
+	// プレレイヤーをゲット
+	PlayerOverride = UGameplayStatics::GetActorOfClass(GetWorld(), ACPP_TVRPawn::StaticClass());
+
+	AActor* Spawner = UGameplayStatics::GetActorOfClass(GetWorld(), ANavEnterSpawner::StaticClass());
+	if (!Spawner)
+	{
+		Spawner = GetWorld()->SpawnActor(ANavEnterSpawner::StaticClass());
+	}
+	LocationSpawner = Cast<ANavEnterSpawner>(Spawner);
+	// 2025.09.01 ウー end
 }
 
 // Called every frame
@@ -57,8 +80,51 @@ void AWitchBossActor::Tick(float DeltaSeconds)
 	const FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(WitchLoc, TargetLoc);
 	const FRotator NewRot = bYawOnly ? FRotator(0.f, LookAt.Yaw, 0.f) : LookAt;
 	SetActorRotation(NewRot);
-
-
-
 }
 
+// 2025.09.01 ウー start
+void AWitchBossActor::Shoot()
+{
+	SkillFireball->Shoot();
+}
+
+bool AWitchBossActor::GetIsAttack() const
+{
+	return IsAttack;
+}
+
+void AWitchBossActor::CompleteAttack()
+{
+	IsAttack = false;
+}
+
+void AWitchBossActor::UseFireball(const FVector& TargetLocation, const FVector& StartLocation)
+{
+	IsAttack = true;
+
+	// スタート位置
+	FVector SocketLocation = StartLocation;
+
+	USkeletalMeshComponent* MyMesh = GetMesh();
+	if (MyMesh && MyMesh->DoesSocketExist(FireballSocketName))
+		SocketLocation = MyMesh->GetSocketLocation(FireballSocketName);
+
+	// 目標位置を探す
+	FVector NearWitchLocation, NearPlayerLocation;
+	if (LocationSpawner)
+	{
+		LocationSpawner->SetGroundRadius(SkillFireball->GetAttackRadius());
+		LocationSpawner->GetStartAndEndLocation(NearWitchLocation, NearPlayerLocation);
+	}
+
+	// 火球を生成する
+	AMeteorite* FireBall = SkillFireball->SpawnFireBall(SocketLocation);
+	if (FireBall)
+	{
+		FireBall->SetTargetPoint(NearPlayerLocation);
+		ACharacter* Player = Cast<ACharacter>(PlayerOverride);
+		if(Player)
+			FireBall->SetTarget(Player);
+	}
+}
+// 2025.09.01 ウー end

@@ -121,6 +121,12 @@ public:
 	// 2025.08.30 ウー start
 
 	/// <summary>
+	/// 地面判定の半径を設定
+	/// </summary>
+	/// <param name="Radius"></param>
+	void SetGroundRadius(float Radius);
+
+	/// <summary>
 	/// 二つの(魔女とプレレイヤーの)近くの位置をゲット
 	/// </summary>
 	/// <param name="ONearWitch">魔女の位置</param>
