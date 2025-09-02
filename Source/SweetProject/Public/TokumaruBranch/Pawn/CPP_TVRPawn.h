@@ -77,7 +77,7 @@ protected:
 	/// <summary>
     /// 剣装備
     /// </summary>
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void EquipSword();
 
 	/// <summary>

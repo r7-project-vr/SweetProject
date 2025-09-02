@@ -20,6 +20,9 @@ ACPP_Match::ACPP_Match()
 	FireEffect->SetupAttachment(RootComponent);
 	FireEffect->bAutoActivate = false;
 
+	pLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("light"));
+	pLight->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +54,7 @@ void ACPP_Match::StartFire()
 		FireEffect->ActivateSystem();
 		isFire = true;
 		CheckFireDelegate.Broadcast(isFire);
+		//pLight->SetVisibility(true);
 	}
 }
 
@@ -61,6 +65,7 @@ void ACPP_Match::StopFire()
 		FireEffect->DeactivateSystem();
 		isFire = false;
 		CheckFireDelegate.Broadcast(isFire);
+		//pLight->SetVisibility(false);
 	}
 }
 
