@@ -89,6 +89,18 @@ private:
 	void UpdateAttackRange();
 
 	/// <summary>
+	/// 爆発エフェクトを表示
+	/// </summary>
+	void ShowExplosion();
+
+	/// <summary>
+	/// 爆発が終わった
+	/// </summary>
+	/// <param name="PSystem"></param>
+	UFUNCTION()
+	void OnExplosionComplete(UParticleSystemComponent* PSystem);
+
+	/// <summary>
 	/// ダメージ計算
 	/// </summary>
 	void HandleDamage();

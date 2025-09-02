@@ -7,6 +7,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "GameFramework/Character.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "MurasameBranch/WitchBossActor.h"
 
 // Sets default values
 AMeteorite::AMeteorite()
@@ -31,6 +32,7 @@ AMeteorite::AMeteorite()
 
 	ExplosionEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Explosion Effect"));
 	ExplosionEffect->SetupAttachment(RootComponent);
+	ExplosionEffect->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -38,10 +40,13 @@ void AMeteorite::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	AttackRangeDynamic = nullptr;
+
 	if (FireBallCollision)
 		FireBallCollision->OnComponentBeginOverlap.AddDynamic(this, &AMeteorite::OnFireBallOverlapBegin);
-	/*else
-		UE_LOG(LogTemp, Error, TEXT("Bind BeginOverlap error"));*/
+	
+	if (ExplosionEffect)
+		ExplosionEffect->OnSystemFinished.AddDynamic(this, &AMeteorite::OnExplosionComplete);
 }
 
 // Called every frame
@@ -87,9 +92,17 @@ void AMeteorite::OnFireBallOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 	if (!OtherActor)
 		return;
 
+	if (OtherActor->IsA(AWitchBossActor::StaticClass()) || OtherActor->IsA(AMeteorite::StaticClass()))
+		return;
+
 	CanMove = false;
+	// 自身メッシュとNiagaraを表示しない
+	FireBallMesh->SetVisibility(false);
+	FireEffect->Deactivate();
+	if(AttackRangeDynamic)
+		AttackRangeDynamic->SetScalarParameterValue(TEXT("Opacity"), 0);
 	// 爆発エフェクト
-	
+	ShowExplosion();
 	// ダメージ判定
 	HandleDamage();
 }
@@ -113,10 +126,11 @@ void AMeteorite::MakeAttackRange()
 	AttackRangeDynamic = UMaterialInstanceDynamic::Create(AttackRange, this);
 	FVector HitNormal;
 	FVector MaterialPoint = GetAttackRangeLocation(HitNormal);
-	GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("attack effect: %s"), *MaterialPoint.ToString()));
+	
 	if (MaterialPoint != StartPoint)
 	{
 		AttackRangeDynamic->SetScalarParameterValue(TEXT("Percent"), 0);
+		AttackRangeDynamic->SetScalarParameterValue(TEXT("Opacity"), 1);
 
 		FVector Size = FVector(1, AttackRangeRadius, AttackRangeRadius);
 		UDecalComponent* Hole = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), AttackRangeDynamic, Size, MaterialPoint, HitNormal.Rotation(), 0.f);
@@ -153,6 +167,18 @@ void AMeteorite::UpdateAttackRange()
 		float Percent =FMath::Clamp((Total - Now) / Total, 0, 1);
 		AttackRangeDynamic->SetScalarParameterValue(TEXT("Percent"), Percent);
 	}
+}
+
+void AMeteorite::ShowExplosion()
+{
+	ExplosionEffect->Activate(true);
+}
+
+void AMeteorite::OnExplosionComplete(UParticleSystemComponent* PSystem)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, FString::Printf(TEXT("Explosion complete")));
+	NotifyDisappear();
+	Destroy();
 }
 
 void AMeteorite::HandleDamage()

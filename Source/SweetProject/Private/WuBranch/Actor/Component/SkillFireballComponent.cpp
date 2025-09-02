@@ -46,7 +46,6 @@ AMeteorite* USkillFireballComponent::SpawnFireBall(FVector Location, FRotator Ro
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-
 	AMeteorite* FireBall = GetOwner()->GetWorld()->SpawnActor<AMeteorite>(FireBallSample, Location, Rotator, SpawnParams);
 	if (FireBall)
 	{

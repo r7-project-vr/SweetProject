@@ -100,14 +100,13 @@ void AWitchBossActor::CompleteAttack()
 
 void AWitchBossActor::UseFireball(const FVector& TargetLocation, const FVector& StartLocation)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange, TEXT("Use Fireball"));
 	IsAttack = true;
 
 	// スタート位置
 	FVector SocketLocation = StartLocation;
 
 	USkeletalMeshComponent* MyMesh = GetMesh();
-	if (!MyMesh || !MyMesh->DoesSocketExist(FireballSocketName))
+	if (MyMesh && MyMesh->DoesSocketExist(FireballSocketName))
 		SocketLocation = MyMesh->GetSocketLocation(FireballSocketName);
 
 	// 目標位置を探す
