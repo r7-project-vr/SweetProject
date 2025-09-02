@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "TokumaruBranch/Interface/CPP_UinterfaceToIntaract.h"
+#include <Components/PointLightComponent.h>
 #include "GameFramework/Actor.h"
 #include "CPP_Match.generated.h"
 
@@ -47,6 +48,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	UStaticMeshComponent* MatchMesh;
+
+	UPROPERTY(VisibleAnywhere, Category = "Light")
+	UPointLightComponent* pLight;
 
 	virtual void Interact(AActor* Interactor) override;
 
