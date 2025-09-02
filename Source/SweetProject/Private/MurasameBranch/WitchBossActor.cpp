@@ -16,6 +16,7 @@
 AWitchBossActor::AWitchBossActor()
 	: FireballSocketName("")
 	, IsAttack(false)
+	, IsStart(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -39,7 +40,9 @@ AWitchBossActor::AWitchBossActor()
 void AWitchBossActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	// 2025.09.02 ウー start
+	IsStart = false;
+	// 2025.09.02 ウー end
 	// 2025.09.01 ウー start
 	// プレレイヤーをゲット
 	PlayerOverride = UGameplayStatics::GetActorOfClass(GetWorld(), ACPP_TVRPawn::StaticClass());
@@ -128,3 +131,15 @@ void AWitchBossActor::UseFireball(const FVector& TargetLocation, const FVector& 
 	}
 }
 // 2025.09.01 ウー end
+
+// 2025.09.02 ウー start
+bool AWitchBossActor::GetIsStart() const
+{
+	return IsStart;
+}
+
+void AWitchBossActor::StartMove()
+{
+	IsStart = true;
+}
+// 2025.09.02 ウー end

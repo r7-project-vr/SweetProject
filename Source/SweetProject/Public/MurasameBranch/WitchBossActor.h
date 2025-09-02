@@ -92,4 +92,25 @@ private:
 #pragma endregion
 	// 2025.09.01 ウー end
 
+	// 2025.09.02 ウー start
+public:
+
+	/// <summary>
+	/// 動き始めているか
+	/// </summary>
+	/// <returns>true: はい, false: いいえ</returns>
+	bool GetIsStart() const;
+
+	/// <summary>
+	/// 動き始める
+	/// </summary>
+	void StartMove();
+
+private:
+
+	/// <summary>
+	/// 動き始めているフラグ
+	/// </summary>
+	bool IsStart;
+	// 2025.09.02 ウー end
 };

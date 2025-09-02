@@ -66,6 +66,7 @@ void AWitchController::InitBlackboard()
 	if (Blackboard)
 	{
 		Blackboard->SetValueAsInt(TEXT("IsStart"), false);
+		Blackboard->SetValueAsInt(TEXT("IsArriveStartLocation"), false);
 	}
 }
 
