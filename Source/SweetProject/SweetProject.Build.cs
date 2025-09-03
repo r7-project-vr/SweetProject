@@ -17,6 +17,7 @@ public class SweetProject : ModuleRules
             "NavigationSystem",
             "KATVRUniversalSDK",
             "Niagara",
+            "Cascade",
             "GeometryCollectionEngine"
         });
 

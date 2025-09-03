@@ -23,7 +23,8 @@ ACPP_TVRPawn::ACPP_TVRPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-
+	//cameraParam = CreateDefaultSubobject<USceneComponent>(TEXT("CameraParam"));
+	//RootComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("lololo"));
 }
 
 // Called when the game starts or when spawned
@@ -89,16 +90,18 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 	}
 
 	if (MyCapsuleComp && MyCamera) {
-
-		float CurrentZ = MyCamera->GetComponentLocation().Z;
+		
+		//float CurrentZ = MyCamera->GetComponentLocation().Z;
+		float CurrentZ = MyCamera->GetRelativeLocation().Z;
 		float DeltaZ = InitialCameraZ - CurrentZ;
-		//UE_LOG(LogTemp, Warning, TEXT("InitialCameraZ: %f, CurrentZ: %f, DeltaZ: %f"), InitialCameraZ, CurrentZ, DeltaZ);
+		UE_LOG(LogTemp, Warning, TEXT("InitialCameraZ: %f, CurrentZ: %f, DeltaZ: %f"), InitialCameraZ, CurrentZ, DeltaZ);
 		if (DeltaZ > distanceToCrouching)
 		{
 			// カプセルの高さ変更
 			if (!isCrouching) {
 				SetCapsuleHeight(minCollisionHeight);// しゃがみ用サイズ
 				isCrouching = true;
+				UE_LOG(LogTemp, Error, TEXT("Crouch!!!!"));
 			}
 			if (!alreadyEquipSword) {
 				OnCrouchStart();
@@ -109,8 +112,11 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 			if (isCrouching) {
 				SetCapsuleHeight(maxCollisionHeight); // 通常サイズ
 				isCrouching = false;
+				UE_LOG(LogTemp, Error, TEXT("standUp!!!!"));
 			}
 		}
+		//a.Z += 10;
+		//MyCamera->SetRelativeLocation(MyCamera->GetRelativeLocation() + a);
 	}
 
 }
@@ -137,6 +143,22 @@ void ACPP_TVRPawn::SetCapsuleHeight(float newHeight)
 	//調整前のカプセルの高さと調整後の高さの差からカプセルの中心位置を調整
 	FVector currentCoupLoc = MyCapsuleComp->GetRelativeLocation();
 	MyCapsuleComp->SetRelativeLocation(currentCoupLoc + FVector(0, 0, -nextHalfHeight));
+
+
+
+	//MyVROrigin->SetRelativeLocation(MyVROrigin->GetRelativeLocation() + FVector(0, 0, nextHalfHeight));
+
+	CameraReset(nextHalfHeight);
+
+	//InitialCameraZ += nextHalfHeight;
+
+	//FVector cameraLocation = MyCamera->GetComponentLocation();
+	//cameraLocation.Z += nextHalfHeight;
+	//MyCamera->SetWorldLocation(MyCamera->GetComponentLocation() + FVector(0, 0, nextHalfHeight
+	//MyCamera->SetRelativeLocation(MyCamera->GetRelativeLocation() + FVector(0, 0, 100));
+	//UE_LOG(LogTemp, Error, TEXT("SetcameraZ %f"), MyCamera->GetRelativeLocation().Z);
+
+
 }
 
 void ACPP_TVRPawn::OnCrouchStart()
@@ -160,6 +182,7 @@ void ACPP_TVRPawn::OnCrouchStart()
 
 void ACPP_TVRPawn::InitCameraPosition()
 {
-	InitialCameraZ = MyCamera->GetComponentLocation().Z;
+	//InitialCameraZ = MyCamera->GetComponentLocation().Z;
+	InitialCameraZ = MyCamera->GetRelativeLocation().Z;
 }
 

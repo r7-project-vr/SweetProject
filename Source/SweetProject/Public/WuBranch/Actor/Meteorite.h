@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class UNiagaraComponent;
+class UParticleSystemComponent;
 
 UCLASS()
 class SWEETPROJECT_API AMeteorite : public AActor
@@ -44,6 +45,18 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDisappearDelegate);
 	FDisappearDelegate OnDisappearNotify;
 
+	/// <summary>
+	/// 目標を設定
+	/// </summary>
+	/// <param name="Target">目標</param>
+	void SetTarget(TWeakObjectPtr<ACharacter> Target);
+
+	/// <summary>
+	/// 攻撃範囲の半径を設定
+	/// </summary>
+	/// <param name="Radius">半径</param>
+	void SetAttackRangeRadius(float Radius);
+
 private:
 
 	/// <summary>
@@ -76,7 +89,24 @@ private:
 	void UpdateAttackRange();
 
 	/// <summary>
-	/// 
+	/// 爆発エフェクトを表示
+	/// </summary>
+	void ShowExplosion();
+
+	/// <summary>
+	/// 爆発が終わった
+	/// </summary>
+	/// <param name="PSystem"></param>
+	UFUNCTION()
+	void OnExplosionComplete(UParticleSystemComponent* PSystem);
+
+	/// <summary>
+	/// ダメージ計算
+	/// </summary>
+	void HandleDamage();
+
+	/// <summary>
+	/// 消滅の通知
 	/// </summary>
 	void NotifyDisappear();
 
@@ -97,6 +127,17 @@ private:
 	/// </summary>
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UNiagaraComponent> FireEffect;
+
+	/// <summary>
+	/// 爆発のエフェクト
+	/// </summary>
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* ExplosionEffect;
+
+	/// <summary>
+	/// 目標
+	/// </summary>
+	TWeakObjectPtr<ACharacter> CurrentTarget;
 
 	/// <summary>
 	/// 攻撃範囲のマテリアル
@@ -131,8 +172,8 @@ private:
 	float Speed;
 
 	/// <summary>
-	/// 攻撃範囲
+	/// 攻撃範囲の半径、1は1cm
 	/// </summary>
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float AttackRangeRadius;
+
 };

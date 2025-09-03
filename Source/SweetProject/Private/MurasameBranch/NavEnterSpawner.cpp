@@ -178,6 +178,12 @@ void ANavEnterSpawner::GenerateOnce()
 	}
 }
 
+// 2025.08.30 ウー start
+void ANavEnterSpawner::SetGroundRadius(float Radius)
+{
+	GroundRadius = Radius;
+}
+
 void ANavEnterSpawner::GetStartAndEndLocation(FVector& ONearWitch, FVector& ONearPlayer)
 {
 	UWorld* W = GetWorld();
@@ -220,6 +226,7 @@ void ANavEnterSpawner::GetStartAndEndLocation(FVector& ONearWitch, FVector& ONea
 		*LastStartPoint.ToCompactString(), *LastEndPoint.ToCompactString())
 	);
 }
+// 2025.08.30 ウー end
 
 // Version 1.1
 // void ANavEnterSpawner::OnBoxBeginOverlap(

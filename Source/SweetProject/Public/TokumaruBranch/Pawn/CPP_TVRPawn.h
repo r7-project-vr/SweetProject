@@ -77,7 +77,7 @@ protected:
 	/// <summary>
     /// 剣装備
     /// </summary>
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void EquipSword();
 
 	/// <summary>
@@ -131,6 +131,11 @@ protected:
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "heighter")
 	float minCollisionHeight = 80.0f;
+
+	bool cameraResetPlay = false;
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void CameraReset(float z);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

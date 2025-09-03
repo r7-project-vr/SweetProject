@@ -5,6 +5,9 @@
 #include "Components/SphereComponent.h"
 #include "NiagaraComponent.h"
 #include <Kismet/GameplayStatics.h>
+#include "GameFramework/Character.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "MurasameBranch/WitchBossActor.h"
 
 // Sets default values
 AMeteorite::AMeteorite()
@@ -26,6 +29,10 @@ AMeteorite::AMeteorite()
 
 	FireEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Fire Effect"));
 	FireEffect->SetupAttachment(RootComponent);
+
+	ExplosionEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Explosion Effect"));
+	ExplosionEffect->SetupAttachment(RootComponent);
+	ExplosionEffect->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -33,11 +40,13 @@ void AMeteorite::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	StartPoint = GetActorLocation();
+	AttackRangeDynamic = nullptr;
+
 	if (FireBallCollision)
 		FireBallCollision->OnComponentBeginOverlap.AddDynamic(this, &AMeteorite::OnFireBallOverlapBegin);
-	/*else
-		UE_LOG(LogTemp, Error, TEXT("Bind BeginOverlap error"));*/
+	
+	if (ExplosionEffect)
+		ExplosionEffect->OnSystemFinished.AddDynamic(this, &AMeteorite::OnExplosionComplete);
 }
 
 // Called every frame
@@ -57,6 +66,7 @@ void AMeteorite::SetTargetPoint(FVector Point)
 
 void AMeteorite::Shoot()
 {
+	StartPoint = GetActorLocation();
 	if ((int)FVector::Dist(StartPoint, EndPoint) != 0)
 	{
 		// 向き変更
@@ -67,14 +77,34 @@ void AMeteorite::Shoot()
 	}
 }
 
+void AMeteorite::SetTarget(TWeakObjectPtr<ACharacter> Target)
+{
+	CurrentTarget = Target;
+}
+
+void AMeteorite::SetAttackRangeRadius(float Radius)
+{
+	AttackRangeRadius = Radius;
+}
+
 void AMeteorite::OnFireBallOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!OtherActor)
 		return;
 
+	if (OtherActor->IsA(AWitchBossActor::StaticClass()) || OtherActor->IsA(AMeteorite::StaticClass()))
+		return;
+
 	CanMove = false;
-	NotifyDisappear();
-	
+	// 自身メッシュとNiagaraを表示しない
+	FireBallMesh->SetVisibility(false);
+	FireEffect->Deactivate();
+	if(AttackRangeDynamic)
+		AttackRangeDynamic->SetScalarParameterValue(TEXT("Opacity"), 0);
+	// 爆発エフェクト
+	ShowExplosion();
+	// ダメージ判定
+	HandleDamage();
 }
 
 void AMeteorite::Move(float DeltaTime)
@@ -96,12 +126,13 @@ void AMeteorite::MakeAttackRange()
 	AttackRangeDynamic = UMaterialInstanceDynamic::Create(AttackRange, this);
 	FVector HitNormal;
 	FVector MaterialPoint = GetAttackRangeLocation(HitNormal);
-	GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Green, FString::Printf(TEXT("attack effect: %s"), *MaterialPoint.ToString()));
+	
 	if (MaterialPoint != StartPoint)
 	{
 		AttackRangeDynamic->SetScalarParameterValue(TEXT("Percent"), 0);
+		AttackRangeDynamic->SetScalarParameterValue(TEXT("Opacity"), 1);
 
-		FVector Size = FVector(1, 500, 500);
+		FVector Size = FVector(1, AttackRangeRadius, AttackRangeRadius);
 		UDecalComponent* Hole = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), AttackRangeDynamic, Size, MaterialPoint, HitNormal.Rotation(), 0.f);
 	}
 }
@@ -136,6 +167,34 @@ void AMeteorite::UpdateAttackRange()
 		float Percent =FMath::Clamp((Total - Now) / Total, 0, 1);
 		AttackRangeDynamic->SetScalarParameterValue(TEXT("Percent"), Percent);
 	}
+}
+
+void AMeteorite::ShowExplosion()
+{
+	ExplosionEffect->Activate(true);
+}
+
+void AMeteorite::OnExplosionComplete(UParticleSystemComponent* PSystem)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, FString::Printf(TEXT("Explosion complete")));
+	NotifyDisappear();
+	Destroy();
+}
+
+void AMeteorite::HandleDamage()
+{
+	if (!CurrentTarget.IsValid())
+		return;
+
+	ACharacter* Target = CurrentTarget.Get();
+	FVector MyLocation = GetActorLocation();
+	FVector TargetLocation = Target->GetActorLocation();
+	// 攻撃範囲外
+	if ((TargetLocation - MyLocation).SizeSquared() > FMath::Square(AttackRangeRadius))
+		return;
+
+	// ダメージを与える
+	UGameplayStatics::ApplyDamage(Target, 0.0f, nullptr, this, UDamageType::StaticClass());
 }
 
 void AMeteorite::NotifyDisappear()
