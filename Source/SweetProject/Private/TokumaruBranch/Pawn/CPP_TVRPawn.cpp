@@ -94,7 +94,7 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 		//float CurrentZ = MyCamera->GetComponentLocation().Z;
 		float CurrentZ = MyCamera->GetRelativeLocation().Z;
 		float DeltaZ = InitialCameraZ - CurrentZ;
-		UE_LOG(LogTemp, Warning, TEXT("InitialCameraZ: %f, CurrentZ: %f, DeltaZ: %f"), InitialCameraZ, CurrentZ, DeltaZ);
+		//UE_LOG(LogTemp, Warning, TEXT("InitialCameraZ: %f, CurrentZ: %f, DeltaZ: %f"), InitialCameraZ, CurrentZ, DeltaZ);
 		if (DeltaZ > distanceToCrouching)
 		{
 			// カプセルの高さ変更

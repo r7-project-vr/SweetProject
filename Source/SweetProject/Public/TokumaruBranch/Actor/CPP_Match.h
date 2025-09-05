@@ -7,6 +7,7 @@
 #include "TokumaruBranch/Interface/CPP_UinterfaceToIntaract.h"
 #include <Components/PointLightComponent.h>
 #include "GameFramework/Actor.h"
+#include <NiagaraComponent.h>
 #include "CPP_Match.generated.h"
 
 
@@ -45,6 +46,9 @@ public:
 	// 火のエフェクト
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FX")
 	UParticleSystemComponent* FireEffect;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FX")
+	TObjectPtr<UNiagaraComponent> FireNiagara;
 
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	UStaticMeshComponent* MatchMesh;

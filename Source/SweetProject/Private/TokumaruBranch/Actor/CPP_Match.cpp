@@ -23,6 +23,10 @@ ACPP_Match::ACPP_Match()
 	pLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("light"));
 	pLight->SetupAttachment(RootComponent);
 
+	FireNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("FireNiagara"));
+	FireNiagara->SetupAttachment(RootComponent);
+	FireNiagara->bAutoActivate = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -36,9 +40,16 @@ void ACPP_Match::BeginPlay()
 void ACPP_Match::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (FireNiagara) {
+		FireNiagara->SetWorldRotation(FRotator(0,0,0));
+	}
 
 	if (isFire) {
 		countDown -= (1 * DeltaTime);
+		if (FireNiagara) {
+			FireNiagara->SetRelativeScale3D(FireNiagara->GetRelativeScale3D() - FVector((1 / matchFinishSecond) * DeltaTime));
+			//UE_LOG(LogTemp, Warning, TEXT("InitialCameraZ: %f, CurrentZ: %f, DeltaZ: %f"), a.X, a.Y, a.Z);
+		}
 		if (countDown <= 0) {
 			isFire = false;
 			StopFire();
@@ -49,9 +60,10 @@ void ACPP_Match::Tick(float DeltaTime)
 
 void ACPP_Match::StartFire()
 {
-	if (FireEffect)
+	if (FireNiagara)
 	{
-		FireEffect->ActivateSystem();
+		//FireEffect->ActivateSystem();
+		FireNiagara->ActivateSystem();
 		isFire = true;
 		CheckFireDelegate.Broadcast(isFire);
 		//pLight->SetVisibility(true);
@@ -60,11 +72,15 @@ void ACPP_Match::StartFire()
 
 void ACPP_Match::StopFire()
 {
-	if (FireEffect)
+	if (FireNiagara)
 	{
-		FireEffect->DeactivateSystem();
+		
+		//FireEffect->DeactivateSystem();
+		FireNiagara->Deactivate();
 		isFire = false;
 		CheckFireDelegate.Broadcast(isFire);
+
+		FireNiagara->SetRelativeScale3D(FVector(1, 1, 1));
 		//pLight->SetVisibility(false);
 	}
 }
