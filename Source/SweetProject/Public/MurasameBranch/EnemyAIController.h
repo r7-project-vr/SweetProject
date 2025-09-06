@@ -33,7 +33,7 @@ protected:
     UPROPERTY()
     TObjectPtr<UAISenseConfig_Sight> SightCfg;
 
-    /** 使うBT */
+    /** 使ってるBT */
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI|BT")
     TObjectPtr<UBehaviorTree> BehaviorTreeAsset;
 
