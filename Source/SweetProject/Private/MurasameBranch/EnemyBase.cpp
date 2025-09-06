@@ -11,6 +11,10 @@ AEnemyBase::AEnemyBase()
     //キャラクター移動引数
     PrimaryActorTick.bCanEverTick = false;
     GetCharacterMovement()->bOrientRotationToMovement = true;
+
+    // 2025.09.06 ウー start
+    IsAttack = false;
+    // 2025.09.06 ウー end
 }
 
 void AEnemyBase::BeginPlay()
@@ -80,5 +84,24 @@ float AEnemyBase::GetDesiredAttackRange_Implementation() const
     return Stats ? Stats->MeleeRange : 150.f;
 }
 
+float AEnemyBase::GetCurrentSpeed() const
+{
+    return GetCharacterMovement()->Velocity.Length();
+}
 
+// 2025.09.06 ウー start
+void AEnemyBase::StartAttack()
+{
+    IsAttack = true;
+}
 
+void AEnemyBase::CompleteAttack()
+{
+    IsAttack = false;
+}
+
+bool AEnemyBase::GetIsAttack() const
+{
+    return IsAttack;
+}
+// 2025.09.06 ウー end

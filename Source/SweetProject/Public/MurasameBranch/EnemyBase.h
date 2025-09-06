@@ -50,4 +50,36 @@ public:
 
     //Attack function
     virtual void Attack() { };
+
+    // 2025.09.06 ウー start
+
+    /// <summary>
+    /// 今の移動スピードをゲット
+    /// </summary>
+    /// <returns></returns>
+    float GetCurrentSpeed() const;
+
+    /// <summary>
+    /// 攻撃開始
+    /// </summary>
+    void StartAttack();
+
+    /// <summary>
+    /// 攻撃終了
+    /// </summary>
+    void CompleteAttack();
+
+    /// <summary>
+    /// 攻撃しているか
+    /// </summary>
+    /// <returns></returns>
+    bool GetIsAttack() const;
+
+private:
+
+    /// <summary>
+    /// 攻撃のフラグ
+    /// </summary>
+    bool IsAttack;
+    // 2025.09.06 ウー end
 };
