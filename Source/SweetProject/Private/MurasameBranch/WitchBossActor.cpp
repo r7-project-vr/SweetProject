@@ -96,6 +96,11 @@ bool AWitchBossActor::GetIsAttack() const
 	return IsAttack;
 }
 
+void AWitchBossActor::StartAttack()
+{
+	IsAttack = true;
+}
+
 void AWitchBossActor::CompleteAttack()
 {
 	IsAttack = false;
@@ -103,8 +108,6 @@ void AWitchBossActor::CompleteAttack()
 
 void AWitchBossActor::UseFireball(const FVector& TargetLocation, const FVector& StartLocation)
 {
-	IsAttack = true;
-
 	// スタート位置
 	FVector SocketLocation = StartLocation;
 
