@@ -17,4 +17,6 @@ public:
 	AMeleeEnemy();
 
 	virtual float GetDesiredAttackRange_Implementation() const override;
+
+	virtual void Attack() override;
 };

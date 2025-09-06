@@ -48,4 +48,6 @@ public:
     FORCEINLINE float GetAttackInterval() const { return Stats ? Stats->AttackInterval : 1.5f; }
     FORCEINLINE float GetDamage() const { return Stats ? Stats->Damage : 10.f; }
 
+    //Attack function
+    virtual void Attack() { };
 };
