@@ -132,10 +132,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "heighter")
 	float minCollisionHeight = 80.0f;
 
-	bool cameraResetPlay = false;
-
+	/// <summary>
+	/// カプセルコリジョンがシーンルートコンポーネントなので、従来のカプセルコリジョンの大きさと足元調整では、中心位置が変わるので、その変化分をカメラに適応させないようにする
+	/// </summary>
+	/// <param name="z"></param>
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void CameraReset(float z);
+
+	//UPROPERTY(EditAnywhere,Category = "heighter")
+	//float characterWorldZ = 0.0f;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

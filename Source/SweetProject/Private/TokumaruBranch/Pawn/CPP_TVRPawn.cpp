@@ -35,6 +35,7 @@ void ACPP_TVRPawn::BeginPlay()
 	TArray<AActor*> foundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACPP_GetSpace::StaticClass(), foundActors);
 
+
 	if (foundActors.Num() > 0)
 	{
 		swordPickupActor = foundActors[0]; // 条件に応じて選択可
@@ -118,6 +119,15 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 		//a.Z += 10;
 		//MyCamera->SetRelativeLocation(MyCamera->GetRelativeLocation() + a);
 	}
+
+	//if (GetActorLocation().Z > characterWorldZ) {
+	//	FVector character = GetActorLocation();
+	//	character.Z -= 2.0f;
+	//	if (character.Z <= characterWorldZ) {
+	//		character.Z = characterWorldZ;
+	//	}
+	//	SetActorLocation(character);
+	//}
 
 }
 
