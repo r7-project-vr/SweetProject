@@ -11,6 +11,7 @@ void UFireballChargeNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, U
 	{
 		if (AWitchBossActor* Witch = Cast<AWitchBossActor>(MeshComp->GetOwner()))
 		{
+			Witch->UseFireball();
 			FireBallComp = Cast<USkillFireballComponent>(Witch->GetComponentByClass(USkillFireballComponent::StaticClass()));
 			if (FireBallComp)
 			{
