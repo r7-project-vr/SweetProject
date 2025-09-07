@@ -4,6 +4,8 @@
 #include "MurasameBranch/RangedEnemy.h"
 #include "MurasameBranch/EnemyAIController.h"
 #include "MurasameBranch/EnemyProjectile.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "AIController.h"
 
 
@@ -40,11 +42,11 @@ void ARangedEnemy::Attack()
     FVector SpawnLoc;
     FRotator SpawnRot;
 
-    if (USkeletalMeshComponent* Mesh = GetMesh())
+    if (USkeletalMeshComponent* SelfMesh = GetMesh())
     {
-        if (MuzzleSocketName != NAME_None && Mesh->DoesSocketExist(MuzzleSocketName))
+        if (MuzzleSocketName != NAME_None && SelfMesh->DoesSocketExist(MuzzleSocketName))
         {
-            const FTransform MuzzleTF = Mesh->GetSocketTransform(MuzzleSocketName, RTS_World);
+            const FTransform MuzzleTF = SelfMesh->GetSocketTransform(MuzzleSocketName, RTS_World);
             SpawnLoc = MuzzleTF.GetLocation();
             SpawnRot = (Target->GetActorLocation() - SpawnLoc).Rotation();
         }

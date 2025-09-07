@@ -62,7 +62,7 @@ public:
     /// <summary>
     /// 攻撃開始
     /// </summary>
-    void StartAttack();
+    void StartAttack();//BTTask用，触发攻击动画（开始）
 
     /// <summary>
     /// 攻撃終了

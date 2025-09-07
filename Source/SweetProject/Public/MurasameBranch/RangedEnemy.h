@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "MurasameBranch/EnemyBase.h"
+
+class AEnemyProjectile;
+
 #include "RangedEnemy.generated.h"
 
 /**
