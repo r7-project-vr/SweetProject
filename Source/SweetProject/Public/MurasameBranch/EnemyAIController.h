@@ -51,4 +51,16 @@ protected:
     /** Perceptionの更新及びcallback */
     UFUNCTION()
     void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
+
+    // 2025.09.07 ウー start
+
+public:
+
+    /// <summary>
+    /// 新しいパトロール位置をゲット
+    /// </summary>
+    /// <returns>座標</returns>
+    FVector GetNewPatrolLocation();
+
+    // 2025.09.07 ウー end
 };

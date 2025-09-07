@@ -6,6 +6,9 @@
 #include "MurasameBranch/EnemyBase.h"                          // 敵のデータアセット用　State取得、AI配置ため
 #include "Perception/AISense_Sight.h"
 #include "Kismet/GameplayStatics.h"
+// 2025.09.07 ウー start
+#include <NavigationSystem.h>
+// 2025.09.07 ウー end
 
 AEnemyAIController::AEnemyAIController()
 {
@@ -111,3 +114,24 @@ void AEnemyAIController::OnPerceptionUpdated(const TArray<AActor*>& /*UpdatedAct
         ClearFocus(EAIFocusPriority::Gameplay);
     }
 }
+
+// 2025.09.07 ウー start
+FVector AEnemyAIController::GetNewPatrolLocation()
+{
+    // Navのデータをゲット
+    FNavAgentProperties NavAgentProps;
+    ANavigationData* NavData = UNavigationSystemV1::GetCurrent(GetWorld())->GetNavDataForProps(NavAgentProps);
+
+    // 
+    if (NavData)
+    {
+        FNavLocation ResultLocation;
+        UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
+        if (NavSystem && NavSystem->GetRandomReachablePointInRadius(GetPawn()->GetActorLocation(), 1000.f, ResultLocation, NavData))
+        {
+            return ResultLocation;
+        }
+    }
+    return GetPawn()->GetActorLocation();
+}
+// 2025.09.07 ウー end
