@@ -28,7 +28,7 @@ EBTNodeResult::Type UBTTask_SetNewPatrolLocation::ExecuteTask(UBehaviorTreeCompo
 	if (!Blackboard || !GetSelectedBlackboardKey().IsValid())
 		return EBTNodeResult::Failed;
 
-	FVector Location = AIController->GetNewPatrolLocation();
+	FVector Location = AIController->GetNewPatrolLocation(MinMoveDistance);
 	Blackboard->SetValueAsVector(GetSelectedBlackboardKey(), Location);
 
 	return EBTNodeResult::Type();

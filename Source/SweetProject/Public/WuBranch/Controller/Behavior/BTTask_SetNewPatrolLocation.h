@@ -25,8 +25,8 @@ protected:
 private:
 
 	/// <summary>
-	/// パトロール位置
+	/// 最低移動距離
 	/// </summary>
-	UPROPERTY(EditDefaultsOnly, Category = "AI|BB", meta = (AllowPrivateAccess = "true"))
-	FName KeyPatrolLocation = TEXT("PatrolLocation");
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	float MinMoveDistance;
 };
