@@ -59,8 +59,9 @@ public:
     /// <summary>
     /// 新しいパトロール位置をゲット
     /// </summary>
+    /// <param name="MinDistance">最短距離</param>
     /// <returns>座標</returns>
-    FVector GetNewPatrolLocation();
+    FVector GetNewPatrolLocation(float MinDistance = 0.0f);
 
     // 2025.09.07 ウー end
 };
