@@ -1,37 +1,85 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "MurasameBranch/EnemyStatsDA.h"
 #include "EnemyBase.generated.h"
 
 UCLASS()
 class SWEETPROJECT_API AEnemyBase : public ACharacter
 {
-	GENERATED_BODY()
-
+    GENERATED_BODY()
 public:
-	// Sets default values for this character's properties
-	AEnemyBase();
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
-	float AttackRange = 150.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
-	float AttackInterval = 2.0f;
-
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	bool CanAttack() const;
-
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	void MarkJustAttacked();
+    AEnemyBase();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    virtual void BeginPlay() override;
+
+public:
+    // アセット
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
+    TObjectPtr<UEnemyStatsDA> Stats;
+
+    //　いまのHP値
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stats")
+    float CurrentHealth;
+
+    // 死んでだ？
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
+    bool bIsDead = false;
+
+	// 傷害を受ける
+    virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
+        AController* EventInstigator, AActor* DamageCauser) override;
+
+    UFUNCTION(BlueprintCallable) bool IsAlive() const { return !bIsDead; }
+
+	// 攻撃のAPI　近接攻撃と遠距離攻撃（リライト可能）
+    UFUNCTION(BlueprintCallable) virtual void DoMeleeAttack(AActor* Target);
+    UFUNCTION(BlueprintCallable) virtual void DoRangedAttack(AActor* Target);
+
+	// 攻撃距離を取得（近と遠）
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent) float GetDesiredAttackRange() const;
+    virtual float GetDesiredAttackRange_Implementation() const;
+
+    // AI用引数
+    FORCEINLINE float GetAttackInterval() const { return Stats ? Stats->AttackInterval : 1.5f; }
+    FORCEINLINE float GetDamage() const { return Stats ? Stats->Damage : 10.f; }
+
+    //Attack function
+    virtual void Attack() { };
+
+    // 2025.09.06 ウー start
+
+    /// <summary>
+    /// 今の移動スピードをゲット
+    /// </summary>
+    /// <returns></returns>
+    float GetCurrentSpeed() const;
+
+    /// <summary>
+    /// 攻撃開始
+    /// </summary>
+    void StartAttack();
+
+    /// <summary>
+    /// 攻撃終了
+    /// </summary>
+    void CompleteAttack();
+
+    /// <summary>
+    /// 攻撃しているか
+    /// </summary>
+    /// <returns></returns>
+    bool GetIsAttack() const;
 
 private:
-	float LastAttackTime = -FLT_MAX;
 
+    /// <summary>
+    /// 攻撃のフラグ
+    /// </summary>
+    bool IsAttack;
+    // 2025.09.06 ウー end
 };

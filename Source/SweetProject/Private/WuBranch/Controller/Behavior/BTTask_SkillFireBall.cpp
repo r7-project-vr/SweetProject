@@ -23,7 +23,7 @@ EBTNodeResult::Type UBTTask_SkillFireBall::ExecuteTask(UBehaviorTreeComponent& O
 		return EBTNodeResult::Failed;
 
 	if (AWitchBossActor* Witch = Cast<AWitchBossActor>(MyCharacter))
-		Witch->UseFireball();
+		Witch->StartAttack();
 	else
 		return EBTNodeResult::Failed;
 

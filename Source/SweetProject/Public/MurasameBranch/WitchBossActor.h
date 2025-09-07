@@ -56,6 +56,11 @@ public:
 	bool GetIsAttack() const;
 
 	/// <summary>
+	/// 攻撃開始
+	/// </summary>
+	void StartAttack();
+
+	/// <summary>
 	/// 攻撃完了
 	/// </summary>
 	void CompleteAttack();
