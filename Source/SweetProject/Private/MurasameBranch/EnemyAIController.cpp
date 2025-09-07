@@ -116,7 +116,7 @@ void AEnemyAIController::OnPerceptionUpdated(const TArray<AActor*>& /*UpdatedAct
 }
 
 // 2025.09.07 ウー start
-FVector AEnemyAIController::GetNewPatrolLocation()
+FVector AEnemyAIController::GetNewPatrolLocation(float MinDistance)
 {
     // Navのデータをゲット
     FNavAgentProperties NavAgentProps;
@@ -126,11 +126,19 @@ FVector AEnemyAIController::GetNewPatrolLocation()
     if (NavData)
     {
         FNavLocation ResultLocation;
+        // 今の世界にあるNavをゲット
         UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-        if (NavSystem && NavSystem->GetRandomReachablePointInRadius(GetPawn()->GetActorLocation(), 1000.f, ResultLocation, NavData))
+        FVector MyLocation = GetPawn()->GetActorLocation();
+        // MinDistanceが0だったら、制限なし
+        float MinDist = MinDistance == 0.f ? 9999999 : MinDistance;
+        do
         {
-            return ResultLocation;
-        }
+            if (NavSystem)
+            {
+                NavSystem->GetRandomReachablePointInRadius(MyLocation, 10000.f, ResultLocation, NavData);
+            }
+        } while (FVector::DistXY(ResultLocation.Location, MyLocation) < MinDist);
+        return ResultLocation.Location;
     }
     return GetPawn()->GetActorLocation();
 }
