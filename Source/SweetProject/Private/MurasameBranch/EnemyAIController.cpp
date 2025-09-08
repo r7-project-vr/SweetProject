@@ -145,6 +145,10 @@ FVector AEnemyAIController::GetNewPatrolLocation(float MinDistance)
         float MinDist = MinDistance == 0.f ? 9999999 : MinDistance;
         do
         {
+            // Navの範囲外なら、今の座標を返す
+            if (!IsActorOnNavMesh())
+                return MyLocation;
+
             if (NavSystem)
             {
                 NavSystem->GetRandomReachablePointInRadius(MyLocation, 10000.f, ResultLocation, NavData);
@@ -153,5 +157,25 @@ FVector AEnemyAIController::GetNewPatrolLocation(float MinDistance)
         return ResultLocation.Location;
     }
     return GetPawn()->GetActorLocation();
+}
+
+bool AEnemyAIController::IsActorOnNavMesh()
+{
+    if (!GetPawn())
+        return false;
+
+    FVector ActorLocation = GetPawn()->GetActorLocation();
+
+    // Navigation Systemを取得
+    UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+    if (!NavSys)
+        return false;
+
+    // Nav Mesh上の最も近い点を取得（MaxDistanceは適当に設定）
+    FNavLocation NavLocation;
+    bool bFound = NavSys->ProjectPointToNavigation(ActorLocation, NavLocation, FVector(100.0f, 100.0f, 300.0f));
+
+    // bFoundがtrueならNav Mesh上に位置があることになる
+    return bFound;
 }
 // 2025.09.07 ウー end
