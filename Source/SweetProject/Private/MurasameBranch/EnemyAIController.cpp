@@ -4,14 +4,21 @@
 
 #include "MurasameBranch/EnemyAIController.h"
 #include "MurasameBranch/EnemyBase.h"                          // 敵のデータアセット用　State取得、AI配置ため
+#include "MurasameBranch/MeleeEnemy.h"
 #include "Perception/AISense_Sight.h"
 #include "Kismet/GameplayStatics.h"
 // 2025.09.07 ウー start
 #include <NavigationSystem.h>
 // 2025.09.07 ウー end
+#include "NavigationPath.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 AEnemyAIController::AEnemyAIController()
 {
+    PrimaryActorTick.bCanEverTick = true;
+
     // Perceptionと視覚
     Perception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception"));
     SightCfg = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightCfg"));
@@ -71,6 +78,97 @@ void AEnemyAIController::OnPossess(APawn* InPawn)
     }
 }
 
+void AEnemyAIController::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    //TickMeleeJump(DeltaSeconds);
+}
+
+
+void AEnemyAIController::TickMeleeJump(float DeltaSeconds)
+{
+    AMeleeEnemy* M = Cast<AMeleeEnemy>(GetPawn());
+    if (!M) return;                                     //MeleeEnemyかを判断
+
+    if (!BlackboardComp) BlackboardComp = GetBlackboardComponent();
+    if (!BlackboardComp) return;
+
+    FVector Aim = BlackboardComp->GetValueAsVector(KeyTarget);
+    if (Aim.IsNearlyZero())
+    {
+        if (AActor* A = Cast<AActor>(BlackboardComp->GetValueAsObject(KeyTargetAct)))
+        {
+            Aim = A->GetActorLocation();
+        }
+    }
+    if (Aim.IsNearlyZero()) return;
+
+
+    const FVector From = M->GetActorLocation();
+    const float Dist2D = FVector::Dist2D(From, Aim);
+    const float Accept = M->JumpAcceptRadius > 0.f ? M->JumpAcceptRadius : (M->GetDesiredAttackRange() * 0.8f);
+    if (Dist2D <= Accept) return;
+
+    const float Now = GetWorld()->GetTimeSeconds();
+    if ((Now - M->LastJumpTime) < M->JumpCooldown) return;
+
+    if (UCharacterMovementComponent* Move = M->GetCharacterMovement())
+    {
+        if (Move->IsFalling()) return;
+        if (!Move->IsMovingOnGround()) return;
+    }
+
+
+    FVector To = Aim;
+
+    if (UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld()))
+    {
+        if (UNavigationPath* Path = NavSys->FindPathToLocationSynchronously(GetWorld(), From, Aim, M))
+        {
+            if (Path && Path->PathPoints.Num() >= 2)
+            {
+                To = Path->PathPoints[1];
+            }
+        }
+    }
+
+
+    FVector LaunchVel;
+    const float StepXY = FMath::Max(50.f, M->JumpStepDistance);
+    const float JumpZ = M->JumpZVelocity > 0.f ? M->JumpZVelocity : 600.f;
+
+    if (!ComputeJumpVelocity(From, To, JumpZ, StepXY, LaunchVel))
+    {
+        return; //目標が近すぎ
+    }
+
+
+    M->LaunchCharacter(LaunchVel, true, true);
+    M->LastJumpTime = Now;
+}
+
+bool AEnemyAIController::ComputeJumpVelocity(const FVector& From, const FVector& To,
+    float JumpZ, float StepXY, FVector& OutVel) const
+{
+    const FVector Dir2D = (To - From).GetSafeNormal2D();
+    float Dist2D = FVector::Dist2D(From, To);
+
+
+    Dist2D = FMath::Min(Dist2D, StepXY);
+    if (Dist2D < 10.f) return false;
+
+    const float G = FMath::Abs(GetWorld()->GetGravityZ()); //-980cm
+    const float Time = (G > KINDA_SMALL_NUMBER) ? (2.f * JumpZ / G) : 0.8f;//y = x^2
+    if (Time < 0.1f) return false;
+
+    const float Vxy = Dist2D / Time;
+    const FVector XY = Dir2D * Vxy;
+
+    OutVel = FVector(XY.X, XY.Y, JumpZ);
+    return true;
+}
+
+
 void AEnemyAIController::OnPerceptionUpdated(const TArray<AActor*>& /*UpdatedActors*/)
 {
     APawn* MyPawn = GetPawn();
@@ -114,14 +212,6 @@ void AEnemyAIController::OnPerceptionUpdated(const TArray<AActor*>& /*UpdatedAct
         ClearFocus(EAIFocusPriority::Gameplay);
     }
 }
-
-
-
-
-
-
-
-
 
 
 
