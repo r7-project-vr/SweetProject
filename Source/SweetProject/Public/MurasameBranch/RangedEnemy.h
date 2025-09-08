@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "MurasameBranch/EnemyBase.h"
+#include "RangedEnemy.generated.h"
+
 
 class AEnemyProjectile;
-
-#include "RangedEnemy.generated.h"
 
 /**
  * 遠距離敵
