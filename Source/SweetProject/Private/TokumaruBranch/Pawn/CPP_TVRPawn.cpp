@@ -35,6 +35,7 @@ void ACPP_TVRPawn::BeginPlay()
 	TArray<AActor*> foundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACPP_GetSpace::StaticClass(), foundActors);
 
+
 	if (foundActors.Num() > 0)
 	{
 		swordPickupActor = foundActors[0]; // 条件に応じて選択可
@@ -94,7 +95,7 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 		//float CurrentZ = MyCamera->GetComponentLocation().Z;
 		float CurrentZ = MyCamera->GetRelativeLocation().Z;
 		float DeltaZ = InitialCameraZ - CurrentZ;
-		UE_LOG(LogTemp, Warning, TEXT("InitialCameraZ: %f, CurrentZ: %f, DeltaZ: %f"), InitialCameraZ, CurrentZ, DeltaZ);
+		//UE_LOG(LogTemp, Warning, TEXT("InitialCameraZ: %f, CurrentZ: %f, DeltaZ: %f"), InitialCameraZ, CurrentZ, DeltaZ);
 		if (DeltaZ > distanceToCrouching)
 		{
 			// カプセルの高さ変更
@@ -118,6 +119,15 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 		//a.Z += 10;
 		//MyCamera->SetRelativeLocation(MyCamera->GetRelativeLocation() + a);
 	}
+
+	//if (GetActorLocation().Z > characterWorldZ) {
+	//	FVector character = GetActorLocation();
+	//	character.Z -= 2.0f;
+	//	if (character.Z <= characterWorldZ) {
+	//		character.Z = characterWorldZ;
+	//	}
+	//	SetActorLocation(character);
+	//}
 
 }
 

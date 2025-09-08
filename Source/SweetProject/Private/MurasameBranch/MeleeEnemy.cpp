@@ -38,6 +38,10 @@ float AMeleeEnemy::GetDesiredAttackRange_Implementation() const
 	return Stats ? Stats->MeleeRange : 150.f;
 }
 
+void AMeleeEnemy::Attack()
+{
+}
+
 void AMeleeEnemy::BeginPlay()
 {
 	Super::BeginPlay();

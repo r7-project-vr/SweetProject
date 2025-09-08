@@ -23,6 +23,10 @@ ACPP_Match::ACPP_Match()
 	pLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("light"));
 	pLight->SetupAttachment(RootComponent);
 
+	FireNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("FireNiagara"));
+	FireNiagara->SetupAttachment(RootComponent);
+	FireNiagara->bAutoActivate = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -36,9 +40,26 @@ void ACPP_Match::BeginPlay()
 void ACPP_Match::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (FireNiagara) {
+		FireNiagara->SetWorldRotation(FRotator(0,0,0));
+	}
 
 	if (isFire) {
 		countDown -= (1 * DeltaTime);
+		if (FireNiagara) {
+			FireNiagara->SetRelativeScale3D(FireNiagara->GetRelativeScale3D() - FVector((1 / matchFinishSecond) * DeltaTime));
+
+
+			FVector zV = FireNiagara->GetRelativeLocation();
+			zV.Z -= (51.0f / 2) * (2.0f / 3.0f) / matchFinishSecond * DeltaTime;
+			FireNiagara->SetRelativeLocation(zV);
+			//UE_LOG(LogTemp, Warning, TEXT("InitialCameraZ: %f, CurrentZ: %f, DeltaZ: %f"), a.X, a.Y, a.Z);
+		}
+		if (MatchMesh) {
+			FVector scale =  MatchMesh->GetRelativeScale3D();
+			scale.Z -= 0.5 *(2.0f / 3.0f) /matchFinishSecond * DeltaTime;
+			MatchMesh->SetRelativeScale3D(scale);
+		}
 		if (countDown <= 0) {
 			isFire = false;
 			StopFire();
@@ -49,23 +70,35 @@ void ACPP_Match::Tick(float DeltaTime)
 
 void ACPP_Match::StartFire()
 {
-	if (FireEffect)
+	if (!matchVisible)return;
+	if (FireNiagara)
 	{
-		FireEffect->ActivateSystem();
+		//FireEffect->ActivateSystem();
+		FireNiagara->ActivateSystem();
 		isFire = true;
 		CheckFireDelegate.Broadcast(isFire);
-		//pLight->SetVisibility(true);
+		pLight->SetVisibility(true);
+		MatchMesh->SetVisibility(true);
 	}
 }
 
 void ACPP_Match::StopFire()
 {
-	if (FireEffect)
+	if (FireNiagara)
 	{
-		FireEffect->DeactivateSystem();
+		
+		//FireEffect->DeactivateSystem();
+		FireNiagara->Deactivate();
 		isFire = false;
 		CheckFireDelegate.Broadcast(isFire);
-		//pLight->SetVisibility(false);
+
+		FireNiagara->SetRelativeScale3D(FVector(1, 1, 1));
+		FireNiagara->SetRelativeLocation(FVector(FireNiagara->GetRelativeLocation().X, FireNiagara->GetRelativeLocation().Y, 23.0f));
+		pLight->SetVisibility(false);
+		MatchMesh->SetVisibility(false);
+		MatchMesh->SetRelativeScale3D(FVector(0.3f,0.3f,0.5f));
+
+		matchVisible = false;
 	}
 }
 
@@ -91,5 +124,13 @@ void ACPP_Match::BYInteract()
 bool ACPP_Match::GetIsFire() const 
 {
 	return isFire;
+}
+
+void ACPP_Match::GetMatch()
+{
+	if (matchVisible)return;
+
+	MatchMesh->SetVisibility(true);
+	matchVisible = true;
 }
 

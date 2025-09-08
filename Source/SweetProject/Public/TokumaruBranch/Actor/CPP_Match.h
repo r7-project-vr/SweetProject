@@ -7,6 +7,7 @@
 #include "TokumaruBranch/Interface/CPP_UinterfaceToIntaract.h"
 #include <Components/PointLightComponent.h>
 #include "GameFramework/Actor.h"
+#include <NiagaraComponent.h>
 #include "CPP_Match.generated.h"
 
 
@@ -46,6 +47,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FX")
 	UParticleSystemComponent* FireEffect;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FX")
+	TObjectPtr<UNiagaraComponent> FireNiagara;
+
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	UStaticMeshComponent* MatchMesh;
 
@@ -70,14 +74,26 @@ public:
 	bool GetIsFire() const;
 
 	/// <summary>
+	/// マッチを取得
+	/// </summary>
+	UFUNCTION(BlueprintCallable)
+	void GetMatch();
+
+	/// <summary>
 	/// マッチが何秒で消えるか
 	/// </summary>
 	UPROPERTY(EditAnywhere)
-	float matchFinishSecond = 0.0f;
+	float matchFinishSecond = 10.0f;
 
 	/// <summary>
 	/// マッチ消火タイマー数値減算用変数
 	/// </summary>
 	float countDown = 0.0f;
+
+
+	/// <summary>
+	/// マッチを持ってるかどうか
+	/// </summary>
+	bool matchVisible = true;
 
 };
