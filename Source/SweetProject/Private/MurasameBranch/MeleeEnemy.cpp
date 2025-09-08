@@ -38,10 +38,6 @@ float AMeleeEnemy::GetDesiredAttackRange_Implementation() const
 	return Stats ? Stats->MeleeRange : 150.f;
 }
 
-void AMeleeEnemy::Attack()
-{
-}
-
 void AMeleeEnemy::BeginPlay()
 {
 	Super::BeginPlay();
@@ -54,24 +50,29 @@ void AMeleeEnemy::BeginPlay()
 		
 }
 
-void AMeleeEnemy::Attack() {
-	AAIController* C = GetController<AAIController>();
-	AEnemyBase* E = C ? Cast<AEnemyBase>(C->GetPawn()) : nullptr;
-	UBlackboardComponent* BB = C->GetBlackboardComponent();
-	AActor* Target = BB ? Cast<AActor>(BB->GetValueAsObject(TEXT("TargetActor"))) : nullptr;
+void AMeleeEnemy::Attack()
+{
+	// 2025.09.08 ウー start
+	//AAIController* C = GetController<AAIController>();
+	//AEnemyBase* E = C ? Cast<AEnemyBase>(C->GetPawn()) : nullptr;
+	//UBlackboardComponent* BB = C->GetBlackboardComponent();
+	//AActor* Target = BB ? Cast<AActor>(BB->GetValueAsObject(TEXT("TargetActor"))) : nullptr;
 
-	if (!E || !Target || !E->IsAlive()) return;
+	//if (!E || !Target || !E->IsAlive()) return;
 
-	// 目標に向かって
-	const FVector Dir = (Target->GetActorLocation() - E->GetActorLocation()).GetSafeNormal2D();
-	E->SetActorRotation(Dir.Rotation());
+	//// 目標に向かって
+	//const FVector Dir = (Target->GetActorLocation() - E->GetActorLocation()).GetSafeNormal2D();
+	//E->SetActorRotation(Dir.Rotation());
 
-	E->DoMeleeAttack(Target);
+	//E->DoMeleeAttack(Target);
 
-	// クールタイム記録用
-	//BB->SetValueAsFloat(TEXT("LastAttackTime"), E->GetWorld()->GetTimeSeconds());
+	//// クールタイム記録用
+	////BB->SetValueAsFloat(TEXT("LastAttackTime"), E->GetWorld()->GetTimeSeconds());
 
-	return;
+	//return;
+	AEnemyAIController* EnemyController = GetController<AEnemyAIController>();
+	EnemyController->TickMeleeJump();
+	// 2025.09.08 ウー end
 }
 
 void AMeleeEnemy::OpenAttackCollision()
@@ -89,7 +90,7 @@ void AMeleeEnemy::OnAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 	if (OtherActor->IsA(ACPP_TVRPawn::StaticClass()))
 	{
 		FDamageEvent DamageEvent(UDamageType::StaticClass());
-		OtherActor->TakeDamage(100.f, DamageEvent, GetController(), this);
+		OtherActor->TakeDamage(GetDamage(), DamageEvent, GetController(), this);
 	}
 }
 

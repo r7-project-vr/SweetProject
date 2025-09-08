@@ -75,7 +75,20 @@ public:
     /// <returns></returns>
     bool GetIsAttack() const;
 
+    /// <summary>
+    /// 死亡の通知
+    /// </summary>
+    /// <param name=""></param>
+    DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDeadDelegate);
+    UPROPERTY(BlueprintAssignable)
+    FDeadDelegate OnDeadEvent;
+
 private:
+
+    /// <summary>
+    /// 死亡したのを通知する
+    /// </summary>
+    void NotifyDead();
 
     /// <summary>
     /// 攻撃のフラグ
