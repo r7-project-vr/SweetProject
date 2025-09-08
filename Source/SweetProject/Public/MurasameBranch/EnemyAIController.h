@@ -72,6 +72,11 @@ public:
     /// <returns>座標</returns>
     FVector GetNewPatrolLocation(float MinDistance = 0.0f);
 
+    /// <summary>
+    /// Navの範囲にいるか
+    /// </summary>
+    /// <returns>true: はい, false: いいえ</returns>
+    bool IsActorOnNavMesh();
     // 2025.09.07 ウー end
 
 
