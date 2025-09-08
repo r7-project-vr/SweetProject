@@ -232,7 +232,7 @@ FVector AEnemyAIController::GetNewPatrolLocation(float MinDistance)
         UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
         FVector MyLocation = GetPawn()->GetActorLocation();
         // MinDistanceが0だったら、制限なし
-        float MinDist = MinDistance == 0.f ? 9999999 : MinDistance;
+        float MinDist = MinDistance == 0.f ? 0.f : MinDistance;
         do
         {
             // Navの範囲外なら、今の座標を返す
