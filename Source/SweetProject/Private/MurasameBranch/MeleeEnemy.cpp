@@ -38,10 +38,6 @@ float AMeleeEnemy::GetDesiredAttackRange_Implementation() const
 	return Stats ? Stats->MeleeRange : 150.f;
 }
 
-void AMeleeEnemy::Attack()
-{
-}
-
 void AMeleeEnemy::BeginPlay()
 {
 	Super::BeginPlay();
@@ -54,7 +50,8 @@ void AMeleeEnemy::BeginPlay()
 		
 }
 
-void AMeleeEnemy::Attack() {
+void AMeleeEnemy::Attack()
+{
 	AAIController* C = GetController<AAIController>();
 	AEnemyBase* E = C ? Cast<AEnemyBase>(C->GetPawn()) : nullptr;
 	UBlackboardComponent* BB = C->GetBlackboardComponent();
