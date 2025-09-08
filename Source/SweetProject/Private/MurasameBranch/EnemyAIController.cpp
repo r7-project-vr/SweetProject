@@ -115,6 +115,18 @@ void AEnemyAIController::OnPerceptionUpdated(const TArray<AActor*>& /*UpdatedAct
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 // 2025.09.07 ウー start
 FVector AEnemyAIController::GetNewPatrolLocation(float MinDistance)
 {

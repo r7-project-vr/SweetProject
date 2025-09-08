@@ -9,6 +9,10 @@
 #include "TokumaruBranch/Pawn/CPP_TVRPawn.h"
 #include "Engine/DamageEvents.h"
 // 2025.09.06 ウー end
+#include "BehaviorTree/BlackboardComponent.h"
+#include "MurasameBranch/EnemyProjectile.h"
+#include "Components/SkeletalMeshComponent.h"
+
 
 AMeleeEnemy::AMeleeEnemy()
 {
@@ -37,6 +41,26 @@ void AMeleeEnemy::BeginPlay()
 		CloseAttackCollision();
 	}
 		
+}
+
+void AMeleeEnemy::Attack() {
+	AAIController* C = GetController<AAIController>();
+	AEnemyBase* E = C ? Cast<AEnemyBase>(C->GetPawn()) : nullptr;
+	UBlackboardComponent* BB = C->GetBlackboardComponent();
+	AActor* Target = BB ? Cast<AActor>(BB->GetValueAsObject(TEXT("TargetActor"))) : nullptr;
+
+	if (!E || !Target || !E->IsAlive()) return;
+
+	// 目標に向かって
+	const FVector Dir = (Target->GetActorLocation() - E->GetActorLocation()).GetSafeNormal2D();
+	E->SetActorRotation(Dir.Rotation());
+
+	E->DoMeleeAttack(Target);
+
+	// クールタイム記録用
+	//BB->SetValueAsFloat(TEXT("LastAttackTime"), E->GetWorld()->GetTimeSeconds());
+
+	return;
 }
 
 void AMeleeEnemy::OpenAttackCollision()
