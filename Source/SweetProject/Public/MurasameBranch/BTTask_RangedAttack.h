@@ -4,10 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
+#include "BTTask_RangedAttack.generated.h"
 
 class AEnemyProjectile;
-
-#include "BTTask_RangedAttack.generated.h"
 
 /**
  * 
