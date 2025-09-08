@@ -42,8 +42,7 @@ void UBTService_UpdateTargetAndDis::TickNode(UBehaviorTreeComponent& OwnerComp, 
                     if (D2 < BestD2) { BestD2 = D2; Best = Player; }
                 }
             }
-            if(Best)
-            GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("%s"), *Best->GetFName().ToString()));
+            
             if (Best) BB->SetValueAsObject(KeyTarget, Best);    
         }
     }

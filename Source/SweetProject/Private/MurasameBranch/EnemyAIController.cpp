@@ -45,10 +45,13 @@ void AEnemyAIController::OnPossess(APawn* InPawn)
     {
         if (Enemy->Stats)
         {
-            SightCfg->SightRadius = Enemy->Stats->SightRadius;
-            SightCfg->LoseSightRadius = Enemy->Stats->LoseSightRadius;
-            SightCfg->PeripheralVisionAngleDegrees = Enemy->Stats->SightFOV;
-            Perception->RequestStimuliListenerUpdate();
+            if(SightCfg)
+            {
+                SightCfg->SightRadius = Enemy->Stats->SightRadius;
+                SightCfg->LoseSightRadius = Enemy->Stats->LoseSightRadius;
+                SightCfg->PeripheralVisionAngleDegrees = Enemy->Stats->SightFOV;
+                Perception->RequestStimuliListenerUpdate();
+            }
         }
     }
 
@@ -86,7 +89,7 @@ void AEnemyAIController::Tick(float DeltaSeconds)
 }
 
 
-void AEnemyAIController::TickMeleeJump(float DeltaSeconds)
+void AEnemyAIController::TickMeleeJump()
 {
     AMeleeEnemy* M = Cast<AMeleeEnemy>(GetPawn());
     if (!M) return;                                     //MeleeEnemyかを判断
