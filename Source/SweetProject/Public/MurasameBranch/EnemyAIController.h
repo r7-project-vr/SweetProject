@@ -22,6 +22,9 @@ class SWEETPROJECT_API AEnemyAIController : public AAIController
 public:
     AEnemyAIController();
 
+    //ジャンプ用
+    virtual void Tick(float DeltaSeconds) override;
+
 protected:
     virtual void OnPossess(APawn* InPawn) override;
 
@@ -48,6 +51,12 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "AI|BB")
     FName KeyDistance = TEXT("DistanceToTarget");
 
+    UPROPERTY(EditDefaultsOnly, Category = "AI|BB")
+    FName KeyTargetLoc = TEXT("TargetLocation");
+
+    UPROPERTY(EditDefaultsOnly, Category = "AI|BB")
+    FName KeyTargetAct = TEXT("TargetActor");
+
     /** Perceptionの更新及びcallback */
     UFUNCTION()
     void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
@@ -63,5 +72,17 @@ public:
     /// <returns>座標</returns>
     FVector GetNewPatrolLocation(float MinDistance = 0.0f);
 
+    /// <summary>
+    /// Navの範囲にいるか
+    /// </summary>
+    /// <returns>true: はい, false: いいえ</returns>
+    bool IsActorOnNavMesh();
     // 2025.09.07 ウー end
+
+
+private:
+    //Jump用
+    void TickMeleeJump(float DeltaSeconds);
+    bool ComputeJumpVelocity(const FVector& From, const FVector& To,
+        float JumpZ, float StepXY, FVector& OutVel) const;
 };

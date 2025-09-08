@@ -12,6 +12,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "MurasameBranch/EnemyProjectile.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 AMeleeEnemy::AMeleeEnemy()
@@ -23,11 +24,17 @@ AMeleeEnemy::AMeleeEnemy()
 
 	AttackCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Attack Collision"));
 	AttackCollision->SetupAttachment(RootComponent);
+
+	//Jump用
+	if (UCharacterMovementComponent* Move = GetCharacterMovement())
+	{
+		Move->JumpZVelocity = JumpZVelocity;
+	}
 }
 
 float AMeleeEnemy::GetDesiredAttackRange_Implementation() const
 {
-	//近接攻撃範囲です
+	//近接攻撃範囲
 	return Stats ? Stats->MeleeRange : 150.f;
 }
 
