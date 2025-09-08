@@ -104,4 +104,9 @@ bool AEnemyBase::GetIsAttack() const
 {
     return IsAttack;
 }
+void AEnemyBase::NotifyDead()
+{
+    if (OnDeadEvent.IsBound())
+        OnDeadEvent.Broadcast();
+}
 // 2025.09.06 ウー end
