@@ -6,6 +6,9 @@
 #include "MurasameBranch/EnemyBase.h"
 #include "RangedEnemy.generated.h"
 
+
+class AEnemyProjectile;
+
 /**
  * 遠距離敵
  */
