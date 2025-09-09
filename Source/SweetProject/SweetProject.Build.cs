@@ -18,7 +18,10 @@ public class SweetProject : ModuleRules
             "KATVRUniversalSDK",
             "Niagara",
             "Cascade",
-            "GeometryCollectionEngine"
+            "GeometryCollectionEngine", 
+            "UMG", 
+            "Slate", 
+            "SlateCore"
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });

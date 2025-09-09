@@ -14,6 +14,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include <TokumaruBranch/Pawn/CPP_TVRPawn.h>
 
 AEnemyAIController::AEnemyAIController()
 {
@@ -44,10 +45,13 @@ void AEnemyAIController::OnPossess(APawn* InPawn)
     {
         if (Enemy->Stats)
         {
-            SightCfg->SightRadius = Enemy->Stats->SightRadius;
-            SightCfg->LoseSightRadius = Enemy->Stats->LoseSightRadius;
-            SightCfg->PeripheralVisionAngleDegrees = Enemy->Stats->SightFOV;
-            Perception->RequestStimuliListenerUpdate();
+            if(SightCfg)
+            {
+                SightCfg->SightRadius = Enemy->Stats->SightRadius;
+                SightCfg->LoseSightRadius = Enemy->Stats->LoseSightRadius;
+                SightCfg->PeripheralVisionAngleDegrees = Enemy->Stats->SightFOV;
+                Perception->RequestStimuliListenerUpdate();
+            }
         }
     }
 
@@ -85,7 +89,7 @@ void AEnemyAIController::Tick(float DeltaSeconds)
 }
 
 
-void AEnemyAIController::TickMeleeJump(float DeltaSeconds)
+void AEnemyAIController::TickMeleeJump()
 {
     AMeleeEnemy* M = Cast<AMeleeEnemy>(GetPawn());
     if (!M) return;                                     //MeleeEnemyかを判断
@@ -178,17 +182,20 @@ void AEnemyAIController::OnPerceptionUpdated(const TArray<AActor*>& /*UpdatedAct
     TArray<AActor*> SeenActors;
     Perception->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), SeenActors);
 
-    AActor* Best = nullptr;
+    ACPP_TVRPawn* Best = nullptr;
     float BestDistSq = TNumericLimits<float>::Max();
 
     for (AActor* A : SeenActors)
     {
-        // 距離
-        const float D2 = FVector::DistSquared(A->GetActorLocation(), MyPawn->GetActorLocation());
-        if (D2 < BestDistSq)
+        if (ACPP_TVRPawn* Player = Cast<ACPP_TVRPawn>(A))
         {
-            BestDistSq = D2;
-            Best = A;
+            // 距離
+            const float D2 = FVector::DistSquared(Player->GetActorLocation(), MyPawn->GetActorLocation());
+            if (D2 < BestDistSq)
+            {
+                BestDistSq = D2;
+                Best = Player;
+            }
         }
     }
 

@@ -7,6 +7,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISense_Sight.h"
+#include <TokumaruBranch/Pawn/CPP_TVRPawn.h>
 
 UBTService_UpdateTargetAndDis::UBTService_UpdateTargetAndDis()
 {
@@ -25,19 +26,24 @@ void UBTService_UpdateTargetAndDis::TickNode(UBehaviorTreeComponent& OwnerComp, 
     if (!AI || !Enemy || !BB) return;
 
 	// 一番近い敵「プレイヤー」を探す
-    AActor* Best = Cast<AActor>(BB->GetValueAsObject(KeyTarget));
+    ACPP_TVRPawn* Best = Cast<ACPP_TVRPawn>(BB->GetValueAsObject(KeyTarget));
     if (!Best)
     {
         if (UAIPerceptionComponent* Per = AI->FindComponentByClass<UAIPerceptionComponent>())
         {
-            TArray<AActor*> Seen; Per->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), Seen);
+            TArray<AActor*> Seen; 
+            Per->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), Seen);
             float BestD2 = TNumericLimits<float>::Max();
             for (AActor* A : Seen)
             {
-                const float D2 = FVector::DistSquared(A->GetActorLocation(), Enemy->GetActorLocation());
-                if (D2 < BestD2) { BestD2 = D2; Best = A; }
+                if (ACPP_TVRPawn* Player = Cast<ACPP_TVRPawn>(A))
+                {
+                    const float D2 = FVector::DistSquared(A->GetActorLocation(), Enemy->GetActorLocation());
+                    if (D2 < BestD2) { BestD2 = D2; Best = Player; }
+                }
             }
-            if (Best) BB->SetValueAsObject(KeyTarget, Best);
+            
+            if (Best) BB->SetValueAsObject(KeyTarget, Best);    
         }
     }
 

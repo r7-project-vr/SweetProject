@@ -79,10 +79,14 @@ public:
     bool IsActorOnNavMesh();
     // 2025.09.07 ウー end
 
+    // 2025.09.08 ウー start
+//private:
+    //Jump用
+    void TickMeleeJump();
 
 private:
-    //Jump用
-    void TickMeleeJump(float DeltaSeconds);
     bool ComputeJumpVelocity(const FVector& From, const FVector& To,
         float JumpZ, float StepXY, FVector& OutVel) const;
+
+    // 2025.09.07 ウー end
 };
