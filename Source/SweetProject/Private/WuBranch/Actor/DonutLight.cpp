@@ -65,6 +65,7 @@ void ADonutLight::Tick(float DeltaTime)
 
 void ADonutLight::OnFireOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Overlap Begin"));
 	if (OtherActor)
 	{
 
