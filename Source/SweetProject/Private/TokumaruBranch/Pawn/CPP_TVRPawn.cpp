@@ -184,6 +184,12 @@ void ACPP_TVRPawn::OnCrouchStart()
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("装備する"));
 		EquipSword();
+		if (ACPP_GetSpace* getSpace = Cast<ACPP_GetSpace>(swordPickupActor)) {
+			getSpace->hidden();
+
+		}
+		//swordPickupActor->SetActorHiddenInGame(true);
+		//swordPickupActor->SetActorTickEnabled(false);
 	}
 	else {
 		//UE_LOG(LogTemp, Warning, TEXT("距離が足りない"));

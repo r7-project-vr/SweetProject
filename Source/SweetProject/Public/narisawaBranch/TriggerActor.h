@@ -1,10 +1,14 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "TriggerActor.generated.h"
 
 class UBoxComponent;
+
+//2025 9.10 得丸陽生
+class ACPP_GetSpace;
+//2025 9.10 得丸陽生 end
 
 UCLASS()
 class SWEETPROJECT_API ATriggerActor : public AActor
@@ -18,7 +22,7 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UBoxComponent* TriggerVolume;
 
-    // �I�[�o�[���b�v�C�x���g�p�̊֐�
+    // オーバーラップイベント用の関数
     UFUNCTION()
     void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -28,4 +32,10 @@ protected:
 public:
     UFUNCTION(BlueprintCallable, Category = "Subtitle")
     void ShowSubtitle();
+
+
+    //2025 9.10 得丸陽生
+    UFUNCTION(BlueprintCallable, Category = "Subtitle")
+    void SearchPickupActor();
+    //2025 9.10 得丸陽生 end
 };
