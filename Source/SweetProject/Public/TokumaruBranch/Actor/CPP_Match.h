@@ -50,7 +50,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FX")
 	TObjectPtr<UNiagaraComponent> FireNiagara;
 
-	UPROPERTY(VisibleAnywhere, Category = "Mesh")
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category = "Mesh")
 	UStaticMeshComponent* MatchMesh;
 
 	UPROPERTY(VisibleAnywhere, Category = "Light")
@@ -83,7 +83,7 @@ public:
 	/// マッチが何秒で消えるか
 	/// </summary>
 	UPROPERTY(EditAnywhere)
-	float matchFinishSecond = 10.0f;
+	float matchFinishSecond = 15.0f;
 
 	/// <summary>
 	/// マッチ消火タイマー数値減算用変数
@@ -95,5 +95,12 @@ public:
 	/// マッチを持ってるかどうか
 	/// </summary>
 	bool matchVisible = true;
+
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
+	void changeMeshMaterial(int state);
+
+	bool normal = true;
+	bool koge = false;
+	bool marukoge = false;
 
 };

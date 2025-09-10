@@ -71,6 +71,10 @@ void ADonutLight::OnFireOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 
 		//2025.08.28 得丸陽生
 		// 燃やせるものが近づいたら、ライトを点灯させる
+		if (OtherComp->ComponentHasTag("FireFeeld")) {
+			TurnOnLight();
+		}
+
 		if (ACPP_Match* MatchActor = Cast<ACPP_Match>(OtherActor)) {
 			if (MatchActor->GetIsFire()) {
 				TurnOnLight();

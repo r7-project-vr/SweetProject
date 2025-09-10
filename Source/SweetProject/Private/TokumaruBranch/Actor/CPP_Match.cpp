@@ -46,24 +46,51 @@ void ACPP_Match::Tick(float DeltaTime)
 
 	if (isFire) {
 		countDown -= (1 * DeltaTime);
-		if (FireNiagara) {
+		if (FireNiagara && MatchMesh) {
 			FireNiagara->SetRelativeScale3D(FireNiagara->GetRelativeScale3D() - FVector((1 / matchFinishSecond) * DeltaTime));
 
+			if (normal) {
+				if (countDown <= matchFinishSecond - ((matchFinishSecond / 3))) {
+					changeMeshMaterial(1);
+					koge = true;
+					normal = false;
+					marukoge = false;
+				}
+			}
 
-			FVector zV = FireNiagara->GetRelativeLocation();
-			zV.Z -= (51.0f / 2) * (2.0f / 3.0f) / matchFinishSecond * DeltaTime;
-			FireNiagara->SetRelativeLocation(zV);
+
+			if (koge) {
+				if (countDown <= matchFinishSecond - ((matchFinishSecond / 3) * 2)) {
+					changeMeshMaterial(2);
+					marukoge = true;
+					koge = false;
+					normal = false;
+				}
+			}
+
+			
+			//FVector zV = FireNiagara->GetRelativeLocation();
+			//zV.Z -= (51.0f / 2) * (2.0f / 3.0f) / matchFinishSecond * DeltaTime;
+			//FireNiagara->SetRelativeLocation(zV);
 			//UE_LOG(LogTemp, Warning, TEXT("InitialCameraZ: %f, CurrentZ: %f, DeltaZ: %f"), a.X, a.Y, a.Z);
 		}
-		if (MatchMesh) {
-			FVector scale =  MatchMesh->GetRelativeScale3D();
-			scale.Z -= 0.5 *(2.0f / 3.0f) /matchFinishSecond * DeltaTime;
-			MatchMesh->SetRelativeScale3D(scale);
-		}
+		//if (MatchMesh) {
+		//	FVector scale =  MatchMesh->GetRelativeScale3D();
+		//	scale.Z -= 0.5 *(2.0f / 3.0f) /matchFinishSecond * DeltaTime;
+		//	MatchMesh->SetRelativeScale3D(scale);
+		//}
+
+
 		if (countDown <= 0) {
 			isFire = false;
 			StopFire();
 			countDown = matchFinishSecond;
+
+
+			changeMeshMaterial(0);
+			normal = true;
+			marukoge = false;
+			koge = false;
 		}
 	}
 }
@@ -93,10 +120,10 @@ void ACPP_Match::StopFire()
 		CheckFireDelegate.Broadcast(isFire);
 
 		FireNiagara->SetRelativeScale3D(FVector(1, 1, 1));
-		FireNiagara->SetRelativeLocation(FVector(FireNiagara->GetRelativeLocation().X, FireNiagara->GetRelativeLocation().Y, 23.0f));
+		//FireNiagara->SetRelativeLocation(FVector(FireNiagara->GetRelativeLocation().X, FireNiagara->GetRelativeLocation().Y, 23.0f));
 		pLight->SetVisibility(false);
 		MatchMesh->SetVisibility(false);
-		MatchMesh->SetRelativeScale3D(FVector(0.3f,0.3f,0.5f));
+		//MatchMesh->SetRelativeScale3D(FVector(0.3f,0.3f,0.5f));
 
 		matchVisible = false;
 	}
