@@ -65,11 +65,16 @@ void ADonutLight::Tick(float DeltaTime)
 
 void ADonutLight::OnFireOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Overlap Begin"));
 	if (OtherActor)
 	{
 
 		//2025.08.28 得丸陽生
 		// 燃やせるものが近づいたら、ライトを点灯させる
+		if (OtherComp->ComponentHasTag("FireFeeld")) {
+			TurnOnLight();
+		}
+
 		if (ACPP_Match* MatchActor = Cast<ACPP_Match>(OtherActor)) {
 			if (MatchActor->GetIsFire()) {
 				TurnOnLight();

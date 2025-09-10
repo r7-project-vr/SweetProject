@@ -109,6 +109,7 @@ public:
 	/// <summary>
 	/// 動き始める
 	/// </summary>
+	UFUNCTION(BlueprintCallable)
 	void StartMove();
 
 private:

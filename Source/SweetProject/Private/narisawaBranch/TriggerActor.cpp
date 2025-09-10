@@ -1,6 +1,9 @@
-#include "narisawaBranch/TriggerActor.h"
+ï»¿#include "narisawaBranch/TriggerActor.h"
 #include "Components/BoxComponent.h"
 #include "narisawaBranch/SubtitleSubsystem.h" 
+//2025 9.10 å¾—ä¸¸é™½ç”Ÿ
+#include "TokumaruBranch/Actor/CPP_GetSpace.h"
+//2025 9.10 å¾—ä¸¸é™½ç”Ÿ end
 #include "Kismet/GameplayStatics.h"
 
 ATriggerActor::ATriggerActor()
@@ -18,16 +21,34 @@ void ATriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* 
 	ShowSubtitle();
 }
 
-// š–‹•\¦ˆ—‚ÌÀ‘•
+// å­—å¹•è¡¨ç¤ºå‡¦ç†ã®å®Ÿè£…
 void ATriggerActor::ShowSubtitle()
 {
-    // SubtitleSubsystem‚ğæ“¾
+    // SubtitleSubsystemã‚’å–å¾—
     if (UGameInstance* GameInstance = GetGameInstance())
     {
         if (USubtitleSubsystem* SubtitleSubsystem = GameInstance->GetSubsystem<USubtitleSubsystem>())
         {
-            // ID‚ğw’è‚µ‚Äš–‹‚ğ•\¦‚·‚é‚æ‚¤ƒŠƒNƒGƒXƒg
+            // IDã‚’æŒ‡å®šã—ã¦å­—å¹•ã‚’è¡¨ç¤ºã™ã‚‹ã‚ˆã†ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
             SubtitleSubsystem->ShowSubtitleByID(SubtitleID);
         }
     }
 }
+
+//2025 09.10 å¾—ä¸¸é™½ç”Ÿ
+void ATriggerActor::SearchPickupActor()
+{
+    TArray<AActor*> foundActors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACPP_GetSpace::StaticClass(), foundActors);
+
+
+    if (foundActors.Num() > 0)
+    {
+        AActor* swordPickupActor = foundActors[0]; // æ¡ä»¶ã«å¿œã˜ã¦é¸æŠå¯
+
+        if (ACPP_GetSpace* getSpace = Cast<ACPP_GetSpace>(swordPickupActor)) {
+            getSpace->FlashActor();
+        }
+    }
+}
+//2025 09.10 å¾—ä¸¸é™½ç”Ÿ end
