@@ -39,7 +39,12 @@ void UBTService_UpdateTargetAndDis::TickNode(UBehaviorTreeComponent& OwnerComp, 
                 if (ACPP_TVRPawn* Player = Cast<ACPP_TVRPawn>(A))
                 {
                     const float D2 = FVector::DistSquared(A->GetActorLocation(), Enemy->GetActorLocation());
-                    if (D2 < BestD2) { BestD2 = D2; Best = Player; }
+                    if (D2 < BestD2) 
+                    {
+                        GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, TEXT(""));
+                        BestD2 = D2;
+                        Best = Player;
+                    }
                 }
             }
             
