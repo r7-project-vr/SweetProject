@@ -101,6 +101,8 @@ void AMeteorite::OnFireBallOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 	FireEffect->Deactivate();
 	if(AttackRangeDynamic)
 		AttackRangeDynamic->SetScalarParameterValue(TEXT("Opacity"), 0);
+	// 再判定しない
+	FireBallCollision->SetCollisionProfileName(FName("NoCollision"));
 	// 爆発エフェクト
 	ShowExplosion();
 	// ダメージ判定
@@ -176,7 +178,6 @@ void AMeteorite::ShowExplosion()
 
 void AMeteorite::OnExplosionComplete(UParticleSystemComponent* PSystem)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, FString::Printf(TEXT("Explosion complete")));
 	NotifyDisappear();
 	Destroy();
 }
