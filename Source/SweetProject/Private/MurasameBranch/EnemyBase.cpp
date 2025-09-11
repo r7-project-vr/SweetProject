@@ -93,12 +93,16 @@ void AEnemyBase::OnPerceptionUpdated(const TArray<AActor*>&)
 float AEnemyBase::TakeDamage(float DamageAmount, const FDamageEvent& DamageEvent,
     AController* EventInstigator, AActor* DamageCauser)
 {
+    // テスト
     if (bIsDead) return 0.f;
     CurrentHealth = FMath::Clamp(CurrentHealth - DamageAmount, 0.f, Stats ? Stats->MaxHealth : 100.f);
     if (CurrentHealth <= 0.f)
     {
         bIsDead = true;
         GetCharacterMovement()->DisableMovement();
+        // 2025.09.09 ウー start
+        NotifyDead();
+        // 2025.09.09 ウー end
         //死亡エフェクトとか音とか追加ところ
         SetLifeSpan(5.f);
     }

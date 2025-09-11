@@ -19,7 +19,6 @@ void USubtitleSubsystem::ShowSubtitleByID(const FName& SubtitleID)
     }
     else
     {
-        // 開発中に気づきやすいようにログを出力
         UE_LOG(LogTemp, Warning, TEXT("SubtitleSubsystem: SubtitleActor with ID '%s' not found."), *SubtitleID.ToString());
     }
 }

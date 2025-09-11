@@ -44,6 +44,7 @@ private:
 	/// <summary>
 	/// 光をつける
 	/// </summary>
+	UFUNCTION(BlueprintCallable, Category = "Light")
 	void TurnOnLight();
 
 	/// <summary>
