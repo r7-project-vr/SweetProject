@@ -6,7 +6,8 @@ public class SweetProject : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { 
+        PublicDependencyModuleNames.AddRange(new string[]
+        {
             "Core",
             "CoreUObject",
             "Engine",
@@ -17,15 +18,20 @@ public class SweetProject : ModuleRules
             "NavigationSystem",
             "KATVRUniversalSDK",
             "Niagara",
-            "Cascade",
-            "GeometryCollectionEngine", 
-            "UMG", 
-            "Slate", 
-            "SlateCore"
+            "UMG",
         });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { });
+        PrivateDependencyModuleNames.AddRange(new string[] { "ASerialCom" });
 
-        PublicDependencyModuleNames.Add("ASerialCom");
+        if (Target.bBuildEditor == true)
+        {
+            // エディタ専用のモジュールをここに追加する
+            PublicDependencyModuleNames.Add("UnrealEd");
+            PublicDependencyModuleNames.Add("Cascade");
+            PublicDependencyModuleNames.Add("GeometryCollectionEngine");
+            PublicDependencyModuleNames.Add("Slate");
+            PublicDependencyModuleNames.Add("SlateCore");
+            // その他、エディタ専用モジュール
+        }
     }
 }
