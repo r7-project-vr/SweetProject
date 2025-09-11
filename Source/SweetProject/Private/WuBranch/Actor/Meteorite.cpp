@@ -56,6 +56,7 @@ void AMeteorite::Tick(float DeltaTime)
 
 	Move(DeltaTime);
 	UpdateAttackRange();
+	UpdateSize();
 }
 
 void AMeteorite::SetTargetPoint(FVector Point)
@@ -166,8 +167,22 @@ void AMeteorite::UpdateAttackRange()
 		float Total = FVector::Dist(StartPoint, EndPoint);
 		float Now = FVector::Dist(GetActorLocation(), EndPoint);
 
-		float Percent =FMath::Clamp((Total - Now) / Total, 0, 1);
+		float Percent = FMath::Clamp((Total - Now) / Total, 0, 1);
 		AttackRangeDynamic->SetScalarParameterValue(TEXT("Percent"), Percent);
+	}
+}
+
+void AMeteorite::UpdateSize()
+{
+	if (CanMove)
+	{
+		float Total = FVector::Dist(StartPoint, EndPoint);
+		float Now = FVector::Dist(GetActorLocation(), EndPoint);
+		float Percent = FMath::Clamp((Total - Now) / Total, 0, 1);
+
+		float Result = FMath::Lerp(MinSize, MaxSize, Percent);
+		FireBallMesh->SetRelativeScale3D(FVector::OneVector * Result);
+		FireBallCollision->SetRelativeScale3D(FVector::OneVector * Result);
 	}
 }
 
