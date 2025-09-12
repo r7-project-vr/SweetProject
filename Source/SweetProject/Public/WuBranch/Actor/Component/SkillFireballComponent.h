@@ -84,12 +84,6 @@ private:
 	void LockFireBall();
 
 	/// <summary>
-	/// 火球が消える通知
-	/// </summary>
-	UFUNCTION()
-	void OnFireBallDisappear();
-
-	/// <summary>
 	/// キャラクターのメッシュ
 	/// </summary>
 	USkeletalMeshComponent* Mesh;
