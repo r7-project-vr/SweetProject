@@ -56,6 +56,7 @@ void AMeteorite::Tick(float DeltaTime)
 
 	Move(DeltaTime);
 	UpdateAttackRange();
+	UpdateSize();
 }
 
 void AMeteorite::SetTargetPoint(FVector Point)
@@ -101,6 +102,8 @@ void AMeteorite::OnFireBallOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 	FireEffect->Deactivate();
 	if(AttackRangeDynamic)
 		AttackRangeDynamic->SetScalarParameterValue(TEXT("Opacity"), 0);
+	// 再判定しない
+	FireBallCollision->SetCollisionProfileName(FName("NoCollision"));
 	// 爆発エフェクト
 	ShowExplosion();
 	// ダメージ判定
@@ -164,8 +167,22 @@ void AMeteorite::UpdateAttackRange()
 		float Total = FVector::Dist(StartPoint, EndPoint);
 		float Now = FVector::Dist(GetActorLocation(), EndPoint);
 
-		float Percent =FMath::Clamp((Total - Now) / Total, 0, 1);
+		float Percent = FMath::Clamp((Total - Now) / Total, 0, 1);
 		AttackRangeDynamic->SetScalarParameterValue(TEXT("Percent"), Percent);
+	}
+}
+
+void AMeteorite::UpdateSize()
+{
+	if (CanMove)
+	{
+		float Total = FVector::Dist(StartPoint, EndPoint);
+		float Now = FVector::Dist(GetActorLocation(), EndPoint);
+		float Percent = FMath::Clamp((Total - Now) / Total, 0, 1);
+
+		float Result = FMath::Lerp(MinSize, MaxSize, Percent);
+		FireBallMesh->SetRelativeScale3D(FVector::OneVector * Result);
+		FireBallCollision->SetRelativeScale3D(FVector::OneVector * Result);
 	}
 }
 
@@ -176,7 +193,6 @@ void AMeteorite::ShowExplosion()
 
 void AMeteorite::OnExplosionComplete(UParticleSystemComponent* PSystem)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, FString::Printf(TEXT("Explosion complete")));
 	NotifyDisappear();
 	Destroy();
 }
