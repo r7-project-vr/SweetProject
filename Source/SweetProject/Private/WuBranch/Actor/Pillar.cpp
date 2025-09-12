@@ -113,10 +113,13 @@ void APillar::Burning(float DeltaTime)
 	// 燃やされているエフェクト
 	if (FireEffect)
 	{
-		FireEffect->Activate(true);
 
 		//2025.09.02 得丸陽生
-		FireEffect->SetRelativeLocation(FireEffect->GetRelativeLocation() + FVector(0.0f,0.0f, ((50.0f / (HP / BurningHPLossRate)) * DeltaTime)));
+		if (!FireEffect->IsActive()) {
+			FireEffect->Activate(true);
+		}
+
+		FireEffect->SetRelativeLocation(FireEffect->GetRelativeLocation() + (FVector(0.0f,0.0f, (200.0f / (HP / BurningHPLossRate)) * DeltaTime)));
 		//2025.09.02 得丸陽生 end
 	}
 
