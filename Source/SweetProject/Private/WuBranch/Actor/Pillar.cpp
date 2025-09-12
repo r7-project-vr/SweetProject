@@ -44,7 +44,7 @@ void APillar::Initialize()
 	IsBurning = false;
 	if (FireEffect)
 	{
-		FireEffect->Activate(false);
+		FireEffect->Deactivate();
 	}
 }
 
@@ -118,7 +118,7 @@ void APillar::Burning(float DeltaTime)
 		if (!FireEffect->IsActive()) {
 			FireEffect->Activate(true);
 		}
-
+			
 		FireEffect->SetRelativeLocation(FireEffect->GetRelativeLocation() + (FVector(0.0f,0.0f, (200.0f / (HP / BurningHPLossRate)) * DeltaTime)));
 		//2025.09.02 得丸陽生 end
 	}
