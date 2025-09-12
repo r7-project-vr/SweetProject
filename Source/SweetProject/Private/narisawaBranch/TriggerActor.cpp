@@ -19,6 +19,11 @@ ATriggerActor::ATriggerActor()
 void ATriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ShowSubtitle();
+
+
+    //2025 09.10 得丸陽生 
+    SearchPickupActor();
+    //2025 09.10 得丸陽生 end
 }
 
 // 字幕表示処理の実装
