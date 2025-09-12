@@ -32,17 +32,21 @@ void ACPP_GetSpace::FlashActor()
 	for (UStaticMeshComponent* MeshComp : MeshComponents)
 	{
 		if (!MeshComp)break;
+		UE_LOG(LogTemp, Warning, TEXT("value"));
 		MeshComp->SetRenderCustomDepth(true);
+		MeshComp->CustomDepthStencilValue = 1;
 		MeshComp->MarkRenderStateDirty();
 	}
 }
 
 void ACPP_GetSpace::hidden()
 {
-	for (UStaticMeshComponent* MeshComp : MeshComponents)
-	{
-		if (!MeshComp)break;
-		MeshComp->SetHiddenInGame(true);
+	if (MeshComponents.Num() > 0) {
+		for (UStaticMeshComponent* MeshComp : MeshComponents)
+		{
+			if (!MeshComp)break;
+			MeshComp->SetHiddenInGame(true);
+		}
 	}
 }
 

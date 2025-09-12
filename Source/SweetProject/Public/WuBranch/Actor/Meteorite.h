@@ -89,6 +89,11 @@ private:
 	void UpdateAttackRange();
 
 	/// <summary>
+	/// サイズの更新
+	/// </summary>
+	void UpdateSize();
+
+	/// <summary>
 	/// 爆発エフェクトを表示
 	/// </summary>
 	void ShowExplosion();
@@ -176,4 +181,15 @@ private:
 	/// </summary>
 	float AttackRangeRadius;
 
+	/// <summary>
+	/// 最小サイズ
+	/// </summary>
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float MinSize;
+
+	/// <summary>
+	/// 最大サイズ
+	/// </summary>
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float MaxSize;
 };

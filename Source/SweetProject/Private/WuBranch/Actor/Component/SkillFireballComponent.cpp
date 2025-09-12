@@ -45,21 +45,23 @@ AMeteorite* USkillFireballComponent::SpawnFireBall(FVector Location, FRotator Ro
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
+	
 	AMeteorite* FireBall = GetOwner()->GetWorld()->SpawnActor<AMeteorite>(FireBallSample, Location, Rotator, SpawnParams);
 	if (FireBall)
 	{
 		CurrentFireBall = FireBall;
 		CurrentFireBall->SetAttackRangeRadius(AttackRadius);
-		CurrentFireBall->OnDisappearNotify.AddDynamic(this, &USkillFireballComponent::OnFireBallDisappear);
 	}
 	return FireBall;
 }
 
 void USkillFireballComponent::Shoot()
 {
-	if(CurrentFireBall)
+	if (CurrentFireBall)
+	{
 		CurrentFireBall->Shoot();
+		CurrentFireBall = nullptr;
+	}
 }
 
 float USkillFireballComponent::GetAttackRadius() const
@@ -87,10 +89,4 @@ void USkillFireballComponent::LockFireBall()
 			CurrentFireBall->SetActorLocation(Location);
 		}
 	}
-}
-
-void USkillFireballComponent::OnFireBallDisappear()
-{
-	CurrentFireBall->OnDisappearNotify.RemoveDynamic(this, &USkillFireballComponent::OnFireBallDisappear);
-	CurrentFireBall = nullptr;
 }
