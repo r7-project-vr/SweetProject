@@ -74,4 +74,7 @@ private:
 	UBoxComponent* AttackCollision;
 	// 2025.09.06 ウー end
 
+	//2025.09.16 得丸陽生
+	void SetHighlighted(bool enable,int number) override;
+	//2025.09.16 得丸陽生 end
 };

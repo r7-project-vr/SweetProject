@@ -100,6 +100,10 @@ public:
     UPROPERTY(BlueprintAssignable)
     FDeadDelegate OnDeadEvent;
 
+    //2025.09.16 得丸陽生
+    virtual void SetHighlighted(bool enable, int number) {};
+    //2025.09.16 得丸陽生 end
+
 private:
 
     /// <summary>

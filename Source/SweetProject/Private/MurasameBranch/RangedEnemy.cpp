@@ -85,6 +85,22 @@ void ARangedEnemy::Attack()
 
     //return EBTNodeResult::Succeeded;
 }
+
+//2025.09.16 得丸陽生
+void ARangedEnemy::SetHighlighted(bool enable, int number)
+{
+
+    if (USkeletalMeshComponent* lightMesh = GetMesh())
+    {
+        lightMesh->SetRenderCustomDepth(enable);
+        if (enable)
+        {
+            lightMesh->CustomDepthStencilValue = 1;
+            lightMesh->MarkRenderStateDirty();
+        }
+    }
+}
+//2025.09.16 得丸陽生 end
 /*
 //DoRangedAttackの例
 #include "EnemyProjectile.h"

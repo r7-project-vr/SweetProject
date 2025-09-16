@@ -42,10 +42,12 @@ void APillar::Initialize()
 {
 	HP = MaxHP;
 	IsBurning = false;
-	if (FireEffect)
-	{
-		FireEffect->Activate(false);
-	}
+	//2025 09.16 得丸陽生
+	//if (FireEffect)
+	//{
+	//	FireEffect->Activate(false);
+	//}
+	//2025 09.16 得丸陽生
 }
 
 // Called every frame
