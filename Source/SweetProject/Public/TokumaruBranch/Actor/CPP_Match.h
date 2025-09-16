@@ -94,6 +94,7 @@ public:
 	/// <summary>
 	/// マッチを持ってるかどうか
 	/// </summary>
+	UPROPERTY(BlueprintReadWrite)
 	bool matchVisible = true;
 
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
