@@ -85,7 +85,7 @@ void AEnemyAIController::OnPossess(APawn* InPawn)
 void AEnemyAIController::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-    //TickMeleeJump(DeltaSeconds);
+    //TickMeleeJump();
 }
 
 
@@ -175,12 +175,17 @@ bool AEnemyAIController::ComputeJumpVelocity(const FVector& From, const FVector&
 
 void AEnemyAIController::OnPerceptionUpdated(const TArray<AActor*>& /*UpdatedActors*/)
 {
+    UE_LOG(LogTemp, Warning, TEXT("OnPerceptionUpdated Fired!"));//関数ちゃんと使用するかどうか確認
+
+
     APawn* MyPawn = GetPawn();
     if (!MyPawn || !Perception) return;
 
 	// 見れる全部のアクターを取得
     TArray<AActor*> SeenActors;
     Perception->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), SeenActors);
+
+    UE_LOG(LogTemp, Log, TEXT("Currently seeing %d actors."), SeenActors.Num());//見えてるアクター数
 
     ACPP_TVRPawn* Best = nullptr;
     float BestDistSq = TNumericLimits<float>::Max();
@@ -212,10 +217,12 @@ void AEnemyAIController::OnPerceptionUpdated(const TArray<AActor*>& /*UpdatedAct
     // Focus設定
     if (Best)
     {
+        UE_LOG(LogTemp, Warning, TEXT("Found best target: %s"), *Best->GetName());
         SetFocus(Best);
     }
     else
     {
+        UE_LOG(LogTemp, Warning, TEXT("No valid player target found in sight. Clearing target."));
         ClearFocus(EAIFocusPriority::Gameplay);
     }
 }
