@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraComponent.h"
 #include "GameFramework/Actor.h"
 #include "CPP_GetSpace.generated.h"
 
@@ -31,4 +32,10 @@ public:
 private:
 	UPROPERTY()
 	TArray<UStaticMeshComponent*> MeshComponents;
+
+	/// <summary>
+    /// 火のエフェクト
+    /// </summary>
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UNiagaraComponent> Spark;
 };
