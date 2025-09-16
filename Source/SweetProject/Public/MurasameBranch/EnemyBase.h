@@ -7,6 +7,10 @@
 #include "MurasameBranch/EnemyStatsDA.h"
 #include "EnemyBase.generated.h"
 
+class UAIPerceptionComponent;
+class UAISenseConfig_Sight;
+
+
 UCLASS()
 class SWEETPROJECT_API AEnemyBase : public ACharacter
 {
@@ -16,6 +20,19 @@ public:
 
 protected:
     virtual void BeginPlay() override;
+
+
+    //9-10 AIPerceptionをEnemyBaseに追加
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI|Perception")
+    UAIPerceptionComponent* Perception = nullptr;
+
+    UPROPERTY()
+    UAISenseConfig_Sight* SightCfg = nullptr;
+
+    UFUNCTION() void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
+
+    //9-10
+
 
 public:
     // アセット

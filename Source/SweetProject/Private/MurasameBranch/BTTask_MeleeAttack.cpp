@@ -42,7 +42,7 @@ EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& Own
     //E->DoMeleeAttack(Target);
 
     //// クールタイム記録用
-    ////BB->SetValueAsFloat(TEXT("LastAttackTime"), E->GetWorld()->GetTimeSeconds());
+    //BB->SetValueAsFloat(TEXT("LastAttackTime"), E->GetWorld()->GetTimeSeconds());
 
     //return EBTNodeResult::Succeeded;
 }

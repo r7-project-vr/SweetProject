@@ -81,6 +81,7 @@ public:
 
     // 2025.09.08 ウー start
 //private:
+public:
     //Jump用
     void TickMeleeJump();
 
