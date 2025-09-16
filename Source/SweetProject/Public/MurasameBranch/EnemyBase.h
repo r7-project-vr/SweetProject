@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "MurasameBranch/EnemyStatsDA.h"
+#include "Particles/ParticleSystemComponent.h" 
 #include "EnemyBase.generated.h"
 
 class UAIPerceptionComponent;
@@ -33,6 +34,31 @@ protected:
 
     //9-10
 
+    // 炎エフェクトを再生するためのコンポーネント
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects")
+    UParticleSystemComponent* BurningEffect;
+
+    /**
+     * @brief このアクタが他のコンポーネントとオーバーラップしたときに呼び出される
+     * @param OverlappedComponent このアクタのオーバーラップしたコンポーネント
+     * @param OtherActor 相手のアクタ
+     * @param OtherComp 相手のアクタのオーバーラップしたコンポーネント
+     * @param OtherBodyIndex 相手のボディインデックス
+     * @param bFromSweep スイープからのオーバーラップか
+     * @param SweepResult スイープ結果
+     */
+    UFUNCTION()
+    void OnFireFieldOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+    /**
+     * @brief このアクタが他のコンポーネントとのオーバーラップを終了したときに呼び出される
+     * @param OverlappedComponent このアクタのオーバーラップしたコンポーネント
+     * @param OtherActor 相手のアクタ
+     * @param OtherComp 相手のアクタのオーバーラップしたコンポーネント
+     * @param OtherBodyIndex 相手のボディインデックス
+     */
+    UFUNCTION()
+    void OnFireFieldOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:
     // アセット
