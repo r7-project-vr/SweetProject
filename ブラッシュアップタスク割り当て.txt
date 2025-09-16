@@ -1,0 +1,107 @@
+1,OP、ED差し替え
+ok
+
+2,次のタスクに進むボタン(キャンディ拾う)実装
+ok
+
+3,タスク終わるまで(キャンディ拾うまで)次に進めない
+処理は書いた（以下に記述）。壁おいて処理を実装するだけ。キャンディをとる処理の場所を徳丸君に聞く
+
+4,敵が燃えてるのがわかりやすいように
+ok　デバッグ未、エフェクト調整必要かも
+
+5,キャンディとったら字幕消す
+3と同じ
+
+6,タイトルでボタン選択
+まだ（いらないと判断）
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+【タスク3】
+
+キャンディを拾う処理の中に、壁を消す処理を追記
+
+ーーーコードーーー
+
+
+#include "Kismet/GameplayStatics.h"
+
+void ACPP_GetSpace::Interact() // 仮の関数名
+{
+    // _↑_既存のキャンディを拾う処理
+
+    // レベル上の壁アクタを取得
+    TArray<AActor*> FoundWalls;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), FoundWalls); // BP_BlockingWallの親クラスを指定
+
+    for (AActor* WallActor : FoundWalls)
+    {
+        // アクタの名前に "BP_BlockingWall" が含まれているかで判断（またはタグ付けを推奨）
+        if (WallActor->GetName().Contains("BP_BlockingWall"))
+        {
+            WallActor->SetActorHiddenInGame(true); // 非表示にする
+            WallActor->SetActorEnableCollision(false); // コリジョンを無効にする
+        }
+    }
+}
+
+
+ーーー解説ーーー
+
+キャンディが拾われた際、UGameplayStatics::GetAllActorsOfClass でレベル上の BP_BlockingWall を探す
+
+見つかった壁アクタに対して、SetActorHiddenInGame(true) で見えなくし、SetActorEnableCollision(false) で当たり判定をなくす
+
+より堅牢な実装としては、壁アクタにWallなどのタグを付けておき、そのタグを持つアクタを検索（GetAllActorsWithTag）する
+
+BP_BlockingWall をレベルに配置し、プレイヤーが通れないように道を塞ぐ
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+【タスク5】
+
+ーーー解説ーーー
+
+Unreal Editorでタグを設定する
+
+レベルに配置されている、キャンディを拾った時に消したい字幕アクタ（BP_SubtitleActor）を選択
+
+画面右側の詳細パネルを下にスクロールし、「Actor」カテゴリを見つける
+
+「Tags」という項目の横にある「+」ボタンをクリック
+
+表示された入力欄に、この字幕を識別するための名前を入力する。例えば、「Tutorial_Candy」と入力します。
+
+コードを修正する
+
+またはキャンディを拾う処理を行っている関数を以下のように修正
+
+ーーーコードーーー
+
+
+#include "narisawaBranch/SubtitleActor.h"
+#include "Kismet/GameplayStatics.h"
+
+void ACPP_GetSpace::Interact() // 仮の関数名
+{
+    // ... 既存のキャンディを拾う処理 ...
+    // ... 壁を消す処理 ...
+
+    // "Tutorial_Candy" というタグを持つSubtitleActorを全て検索
+    TArray<AActor*> FoundActors;
+    UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("TutorialPrompt_Candy"), FoundActors);
+
+    for (AActor* Actor : FoundActors)
+    {
+        ASubtitleActor* Subtitle = Cast<ASubtitleActor>(Actor);
+        if (Subtitle)
+        {
+            // 字幕を非表示にする
+            Subtitle->HideSubtitle();
+        }
+    }
+
+    // ...
+}
