@@ -33,4 +33,7 @@ protected:
     // 3D空間にウィジェットを表示するためのコンポーネント
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     TObjectPtr<UWidgetComponent> SubtitleWidgetComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    UWidgetComponent* SubtitleWidgetComponent;
 };
