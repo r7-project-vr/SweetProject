@@ -13,6 +13,7 @@
 #include "AIController.h"
 //9-10追加AIPerception
 #include "Components/CapsuleComponent.h" 
+#include "NiagaraComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -41,7 +42,7 @@ AEnemyBase::AEnemyBase()
     //9-10追加AIPerception
 
     // パーティクルコンポーネントを作成しキャラクターのルートにアタッチ
-    BurningEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BurningEffect"));
+    BurningEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("BurningEffect"));
     BurningEffect->SetupAttachment(RootComponent);
     BurningEffect->bAutoActivate = false;
 }
@@ -190,20 +191,17 @@ void AEnemyBase::NotifyDead()
 
 void AEnemyBase::OnFireFieldOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    // 接触したコンポーネントの名前が "firefeeld" かどうかを確認
     if (OtherComp && OtherComp->GetName() == TEXT("firefeeld"))
     {
-        // エフェクトを再生
         BurningEffect->Activate(true);
     }
 }
 
+// firefeeldから離れた瞬間の処理
 void AEnemyBase::OnFireFieldOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    // 離れたコンポーネントの名前が "firefeeld" かどうかを確認
     if (OtherComp && OtherComp->GetName() == TEXT("firefeeld"))
     {
-        // エフェクトを停止
         BurningEffect->Deactivate();
     }
 }
