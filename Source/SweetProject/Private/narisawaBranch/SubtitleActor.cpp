@@ -13,7 +13,6 @@ ASubtitleActor::ASubtitleActor()
 
     SubtitleWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("SubtitleWidgetComponent"));
     SubtitleWidgetComponent->SetupAttachment(RootComponent);
-    SubtitleWidgetComponent->SetVisibility(false); // ‰Šúó‘Ô‚Å‚Í”ñ•\Ž¦
 }
 
 void ASubtitleActor::BeginPlay()
@@ -28,14 +27,21 @@ void ASubtitleActor::BeginPlay()
             SubtitleSubsystem->RegisterSubtitleActor(this);
         }
     }
+    HideSubtitle();
 }
 
 void ASubtitleActor::ShowSubtitle()
 {
-    SubtitleWidgetComponent->SetVisibility(true);
+    if (SubtitleWidgetComponent)
+    {
+        SubtitleWidgetComponent->SetVisibility(true);
+    }
 }
 
 void ASubtitleActor::HideSubtitle()
 {
-    SubtitleWidgetComponent->SetVisibility(false);
+    if (SubtitleWidgetComponent)
+    {
+        SubtitleWidgetComponent->SetVisibility(false);
+    }
 }

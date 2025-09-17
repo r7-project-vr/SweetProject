@@ -9,7 +9,7 @@
 
 class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
-
+class UNiagaraComponent;
 
 UCLASS()
 class SWEETPROJECT_API AEnemyBase : public ACharacter
@@ -33,6 +33,16 @@ protected:
 
     //9-10
 
+    // 炎エフェクトを再生するためのコンポーネント
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
+    TObjectPtr<UNiagaraComponent> BurningEffect;
+
+
+    UFUNCTION()
+    void OnFireFieldOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+    UFUNCTION()
+    void OnFireFieldOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:
     // アセット
