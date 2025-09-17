@@ -12,6 +12,8 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"
 //9-10追加AIPerception
+#include "Components/CapsuleComponent.h" 
+#include "NiagaraComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -38,6 +40,11 @@ AEnemyBase::AEnemyBase()
 
 
     //9-10追加AIPerception
+
+    // パーティクルコンポーネントを作成しキャラクターのルートにアタッチ
+    BurningEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("BurningEffect"));
+    BurningEffect->SetupAttachment(RootComponent);
+    BurningEffect->bAutoActivate = false;
 }
 
 void AEnemyBase::BeginPlay()
@@ -57,6 +64,10 @@ void AEnemyBase::BeginPlay()
     {
         CurrentHealth = 100.f;
     }
+
+    // キャラクターのカプセルコンポーネントのOverlapイベントに関数を紐づける
+    GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnFireFieldOverlapBegin);
+    GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AEnemyBase::OnFireFieldOverlapEnd);
 }
 
 //9-10追加AIPerception
@@ -104,6 +115,10 @@ float AEnemyBase::TakeDamage(float DamageAmount, const FDamageEvent& DamageEvent
         NotifyDead();
         // 2025.09.09 ウー end
         //死亡エフェクトとか音とか追加ところ
+        if (BurningEffect && BurningEffect->IsActive())
+        {
+            BurningEffect->Deactivate();
+        }
         SetLifeSpan(5.f);
     }
     return DamageAmount;
@@ -173,3 +188,20 @@ void AEnemyBase::NotifyDead()
         OnDeadEvent.Broadcast();
 }
 // 2025.09.06 ウー end
+
+void AEnemyBase::OnFireFieldOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    if (OtherComp && OtherComp->GetName() == TEXT("firefeeld"))
+    {
+        BurningEffect->Activate(true);
+    }
+}
+
+// firefeeldから離れた瞬間の処理
+void AEnemyBase::OnFireFieldOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+    if (OtherComp && OtherComp->GetName() == TEXT("firefeeld"))
+    {
+        BurningEffect->Deactivate();
+    }
+}
