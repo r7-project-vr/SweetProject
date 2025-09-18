@@ -52,8 +52,8 @@ void ACPP_GetSpace::hidden()
 		{
 			if (!MeshComp)break;
 			MeshComp->SetHiddenInGame(true);
-			Spark->Deactivate();
 		}
 	}
+	Spark->Deactivate();
 }
 
