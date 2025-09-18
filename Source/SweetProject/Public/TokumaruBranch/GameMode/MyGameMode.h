@@ -7,6 +7,7 @@
 #include "MyGameMode.generated.h"
 
 class APillar;
+class UUserWidget;
 
 /**
  * 
@@ -52,6 +53,12 @@ private:
 	/// 破壊された柱の数
 	/// </summary>
 	int DisappearedPillarNum;
+
+	/// <summary>
+	/// フェードイン
+	/// </summary>
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UUserWidget> FadeIn;
 	// 2025.08.29 ウー end
 
 };

@@ -49,6 +49,7 @@ void ARangedEnemy::Attack()
             const FTransform MuzzleTF = SelfMesh->GetSocketTransform(MuzzleSocketName, RTS_World);
             SpawnLoc = MuzzleTF.GetLocation();
             SpawnRot = (Target->GetActorLocation() - SpawnLoc).Rotation();
+            //DrawDebugLine(GetWorld(), SpawnLoc, Target->GetActorLocation(), FColor::Red, false, 50.f, 0, 20.f);
         }
         else
         {
@@ -76,6 +77,7 @@ void ARangedEnemy::Attack()
         UE_LOG(LogTemp, Warning, TEXT("[BTTask_RangedAttack] Spawn Projectile failed."));
         return; //EBTNodeResult::Failed;
     }
+    Proj->SetSpawner(this);
 
     // ダメージ取得
     Proj->Damage = /*Enemy->*/GetDamage();
