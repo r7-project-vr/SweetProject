@@ -5,6 +5,7 @@
 // 2025.08.29 ウー start
 #include "Kismet/GameplayStatics.h"
 #include "WuBranch/Actor/Pillar.h"
+#include "Blueprint/UserWidget.h"
 // 2025.08.29 ウー end
 
 AMyGameMode::AMyGameMode()
@@ -16,30 +17,35 @@ void AMyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	DisappearedPillarNum = 0;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APillar::StaticClass(), Pillars);
-	// バインド
-	for (AActor* Actor : Pillars)
-	{
-		if(APillar* Pillar = Cast<APillar>(Actor))
-			Pillar->OnDisappearNotify.AddDynamic(this, &AMyGameMode::OnPillarDisappear);
-	}
+	//DisappearedPillarNum = 0;
+	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), APillar::StaticClass(), Pillars);
+	//// バインド
+	//for (AActor* Actor : Pillars)
+	//{
+	//	if(APillar* Pillar = Cast<APillar>(Actor))
+	//		Pillar->OnDisappearNotify.AddDynamic(this, &AMyGameMode::OnPillarDisappear);
+	//}
 }
 
 void AMyGameMode::OnPillarDisappear()
 {
-	DisappearedPillarNum++;
-	// 全部破壊されたか
-	if (DisappearedPillarNum == Pillars.Num())
-	{
-		GameClear();
-	}
+	//DisappearedPillarNum++;
+	//// 全部破壊されたか
+	//if (DisappearedPillarNum == Pillars.Num())
+	//{
+	//	UUserWidget* FadeEffect = CreateWidget(GetWorld(), FadeIn);
+	//	if (FadeEffect)
+	//	{
+	//		FadeEffect->
+	//	}
+	//	GameClear();
+	//}
 }
 
 void AMyGameMode::GameClear()
 {
 
-	UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), LoadSuccLevel);
+	//UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), LoadSuccLevel);
 }
 
 // 2025.08.29 ウー end
