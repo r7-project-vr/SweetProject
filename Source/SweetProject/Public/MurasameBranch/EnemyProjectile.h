@@ -41,17 +41,10 @@ protected:
 public:
 
 	/// <summary>
-	/// 所有者を設定
+	/// 無視するものを設定
 	/// </summary>
 	/// <param name="Actor"></param>
-	void SetSpawner(AActor* Actor);
-
-private:
-
-	/// <summary>
-	/// 所有者
-	/// </summary>
-	AActor* Spawner;
+	void SetIgnoreActor(AActor* Actor);
 
 	// 2025.09.18 ウー end
 };

@@ -77,7 +77,8 @@ void ARangedEnemy::Attack()
         UE_LOG(LogTemp, Warning, TEXT("[BTTask_RangedAttack] Spawn Projectile failed."));
         return; //EBTNodeResult::Failed;
     }
-    Proj->SetSpawner(this);
+
+    Proj->SetIgnoreActor(this);
 
     // ダメージ取得
     Proj->Damage = /*Enemy->*/GetDamage();

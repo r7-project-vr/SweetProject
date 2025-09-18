@@ -43,7 +43,7 @@ void AEnemyProjectile::OnHit(UPrimitiveComponent* /*HitComp*/, AActor* Other, UP
 {
     // 2025.09.18 ウー start
     //if (Other && Other != this)
-    if (Other && Other != Spawner && Other->StaticClass() != this->StaticClass())
+    if (Other && Other->StaticClass() != this->StaticClass())
     {
         UGameplayStatics::ApplyDamage(
             Other, Damage, GetInstigatorController(), this, UDamageType::StaticClass());
@@ -52,7 +52,9 @@ void AEnemyProjectile::OnHit(UPrimitiveComponent* /*HitComp*/, AActor* Other, UP
     // 2025.09.18 ウー end
 }
 
-void AEnemyProjectile::SetSpawner(AActor* Actor)
+// 2025.09.18 ウー start
+void AEnemyProjectile::SetIgnoreActor(AActor* Actor)
 {
-    Spawner = Actor;
+	Collision->IgnoreActorWhenMoving(Actor, true);
 }
+// 2025.09.18 ウー end
