@@ -114,7 +114,32 @@ public:
     virtual void SetHighlighted(bool enable, int number) {};
     //2025.09.16 得丸陽生 end
 
+    // 2025.09.18 ウー start
+    
+    /// <summary>
+    /// 時間ごとにダメージを受ける
+    /// </summary>
+    UFUNCTION(BlueprintCallable)
+    void StartReceivesDamageOverTime();
+
+    /// <summary>
+    /// 時間ごとにダメージを受けるのをやめる
+    /// </summary>
+    UFUNCTION(BlueprintCallable)
+    void StopReceivesDamageOverTime();
+
+    // 2025.09.18 ウー end
 private:
+
+    // 2025.09.18 ウー start
+
+    /// <summary>
+    /// 継続ダメージを受ける
+    /// </summary>
+    UFUNCTION()
+    void TakeDamageOverTime();
+
+    // 2025.09.18 ウー end
 
     /// <summary>
     /// 死亡したのを通知する
@@ -125,5 +150,27 @@ private:
     /// 攻撃のフラグ
     /// </summary>
     bool IsAttack;
+
+    // 2025.09.18 ウー start
+
+    /// <summary>
+    /// 継続ダメージを受けるタイマー
+    /// </summary>
+    FTimerHandle OverTimeDamageHandler;
+
+    /// <summary>
+    /// 継続ダメージの時間間隔
+    /// </summary>
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    float OverTimeDamageVelocity;
+
+    /// <summary>
+    /// 継続ダメージの攻撃量
+    /// </summary>
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    float OverTimeDamage;
+
+    // 2025.09.18 ウー end
+
     // 2025.09.06 ウー end
 };

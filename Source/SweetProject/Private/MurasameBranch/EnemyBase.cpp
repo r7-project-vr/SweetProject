@@ -23,6 +23,8 @@ AEnemyBase::AEnemyBase()
 
     // 2025.09.06 ウー start
     IsAttack = false;
+    OverTimeDamageVelocity = ;
+    OverTimeDamage = ;
     // 2025.09.06 ウー end
 
     //9-10追加AIPerception
@@ -182,6 +184,31 @@ bool AEnemyBase::GetIsAttack() const
 {
     return IsAttack;
 }
+
+// 2025.09.18 ウー start
+void AEnemyBase::StartReceivesDamageOverTime()
+{
+    FTimerDynamicDelegate Func;
+    Func.BindUFunction(this, "TakeDamageOverTime");
+
+    FTimerManagerTimerParameters Params;
+    Params.FirstDelay = OverTimeDamageVelocity;
+    Params.bLoop = true;
+
+    GetWorld()->GetTimerManager().SetTimer(OverTimeDamageHandler, Func, OverTimeDamageVelocity, Params);
+}
+
+void AEnemyBase::StopReceivesDamageOverTime()
+{
+
+}
+// 2025.09.18 ウー end
+
+void AEnemyBase::TakeDamageOverTime()
+{
+    TakeDamage();
+}
+
 void AEnemyBase::NotifyDead()
 {
     if (OnDeadEvent.IsBound())
