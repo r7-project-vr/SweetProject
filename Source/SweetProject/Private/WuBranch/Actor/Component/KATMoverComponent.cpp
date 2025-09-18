@@ -66,7 +66,7 @@ void UKATMoverComponent::HandleKATVRInputWalk(float DeltaTime)
 	auto cameraForwardVector = FVector(VRCamera->GetForwardVector().X, VRCamera->GetForwardVector().Y, 0).GetSafeNormal();
 	//FootstepCounter += FMath::Abs(DeltaTime * NowSpeed * MoveAmount);
 
-	GetOwner()->AddActorWorldOffset(cameraForwardVector * MoveAmount * NowSpeed);
+	GetOwner()->AddActorWorldOffset(cameraForwardVector * MoveAmount * NowSpeed,true);
 	//AddActorWorldOffset(GetActorForwardVector() * MoveAmount * NowSpeed);
 }
 

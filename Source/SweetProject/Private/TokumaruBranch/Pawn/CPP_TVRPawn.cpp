@@ -120,14 +120,36 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 		//MyCamera->SetRelativeLocation(MyCamera->GetRelativeLocation() + a);
 	}
 
-	//if (GetActorLocation().Z > characterWorldZ) {
-	//	FVector character = GetActorLocation();
-	//	character.Z -= 2.0f;
-	//	if (character.Z <= characterWorldZ) {
-	//		character.Z = characterWorldZ;
-	//	}
-	//	SetActorLocation(character);
-	//}
+	if (isCrouching) {
+		if (GetActorLocation().Z > (220 - 60)) {
+			FVector character = GetActorLocation();
+			character.Z -= 2.0f;
+			if (character.Z <= (220 - 60)) {
+				character.Z = (220 - 60);
+			}
+			SetActorLocation(character);
+		}
+		else if(GetActorLocation().Z < (220 - 60)){
+			FVector character = GetActorLocation();
+			character.Z = (220 - 60);
+			SetActorLocation(character);
+		}
+	}
+	else {
+		if (GetActorLocation().Z > 220) {
+			FVector character = GetActorLocation();
+			character.Z -= 2.0f;
+			if (character.Z <= 220) {
+				character.Z = 220;
+			}
+			SetActorLocation(character);
+		}
+		else if (GetActorLocation().Z < 220) {
+			FVector character = GetActorLocation();
+			character.Z = 220;
+			SetActorLocation(character);
+		}
+	}
 
 }
 
