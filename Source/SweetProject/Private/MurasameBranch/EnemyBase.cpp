@@ -14,6 +14,10 @@
 //9-10追加AIPerception
 #include "Components/CapsuleComponent.h" 
 #include "NiagaraComponent.h"
+// 2025.09.18 ウー start
+#include "Engine/DamageEvents.h"
+#include "TokumaruBranch/Actor/CPP_Sword.h"
+// 2025.09.18 ウー end
 
 AEnemyBase::AEnemyBase()
 {
@@ -23,8 +27,8 @@ AEnemyBase::AEnemyBase()
 
     // 2025.09.06 ウー start
     IsAttack = false;
-    OverTimeDamageVelocity = ;
-    OverTimeDamage = ;
+    OverTimeDamageVelocity = 0.05f;
+    OverTimeDamage = 3.5f;
     // 2025.09.06 ウー end
 
     //9-10追加AIPerception
@@ -200,14 +204,17 @@ void AEnemyBase::StartReceivesDamageOverTime()
 
 void AEnemyBase::StopReceivesDamageOverTime()
 {
-
+	if (OverTimeDamageHandler.IsValid())
+	    GetWorld()->GetTimerManager().ClearTimer(OverTimeDamageHandler);
 }
-// 2025.09.18 ウー end
 
 void AEnemyBase::TakeDamageOverTime()
 {
-    TakeDamage();
+    FDamageEvent DamageEvent(UDamageType::StaticClass());
+
+    TakeDamage(OverTimeDamage, DamageEvent, nullptr, nullptr);
 }
+// 2025.09.18 ウー end
 
 void AEnemyBase::NotifyDead()
 {
@@ -218,8 +225,17 @@ void AEnemyBase::NotifyDead()
 
 void AEnemyBase::OnFireFieldOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// 2025.09.18 ウー start
+    if(OtherActor && OtherActor->IsA(ACPP_Sword::StaticClass()))
+    {
+		ACPP_Sword* Sword = Cast<ACPP_Sword>(OtherActor);
+		TakeDamage(Sword->power, FDamageEvent(UDamageType::StaticClass()), nullptr, Sword);
+	}
+	// 2025.09.18 ウー end
+
     if (OtherComp && OtherComp->GetName() == TEXT("firefeeld"))
     {
+        StartReceivesDamageOverTime();
         BurningEffect->Activate(true);
     }
 }
@@ -229,6 +245,7 @@ void AEnemyBase::OnFireFieldOverlapEnd(UPrimitiveComponent* OverlappedComponent,
 {
     if (OtherComp && OtherComp->GetName() == TEXT("firefeeld"))
     {
+		StopReceivesDamageOverTime();
         BurningEffect->Deactivate();
     }
 }
