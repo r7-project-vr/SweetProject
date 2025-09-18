@@ -121,15 +121,6 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 		//MyCamera->SetRelativeLocation(MyCamera->GetRelativeLocation() + a);
 	}
 
-	//if (GetActorLocation().Z > characterWorldZ) {
-	//	FVector character = GetActorLocation();
-	//	character.Z -= 2.0f;
-	//	if (character.Z <= characterWorldZ) {
-	//		character.Z = characterWorldZ;
-	//	}
-	//	SetActorLocation(character);
-	//}
-
 }
 
 // Called to bind functionality to input
