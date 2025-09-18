@@ -2,6 +2,7 @@
 
 
 #include "TokumaruBranch/Pawn/CPP_TVRPawn.h"
+#include "narisawaBranch/SubtitleActor.h"
 #include "TimerManager.h"
 #include <Kismet/GameplayStatics.h>
 
@@ -120,15 +121,6 @@ void ACPP_TVRPawn::Tick(float DeltaTime)
 		//MyCamera->SetRelativeLocation(MyCamera->GetRelativeLocation() + a);
 	}
 
-	//if (GetActorLocation().Z > characterWorldZ) {
-	//	FVector character = GetActorLocation();
-	//	character.Z -= 2.0f;
-	//	if (character.Z <= characterWorldZ) {
-	//		character.Z = characterWorldZ;
-	//	}
-	//	SetActorLocation(character);
-	//}
-
 }
 
 // Called to bind functionality to input
@@ -184,6 +176,35 @@ void ACPP_TVRPawn::OnCrouchStart()
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("装備する"));
 		EquipSword();
+
+		// レベル上の壁アクタを取得
+		TArray<AActor*> FoundWalls;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), FoundWalls); // BP_BlockingWallの親クラスを指定
+
+		for (AActor* WallActor : FoundWalls)
+		{
+			// アクタの名前に "BP_BlockingWall" が含まれているかで判断
+			if (WallActor->GetName().Contains("BP_BlockingWall"))
+			{
+				WallActor->SetActorHiddenInGame(true); // 非表示にする
+				WallActor->SetActorEnableCollision(false); // コリジョンを無効にする
+			}
+		}
+
+		// "Tutorial_Candy" というタグを持つSubtitleActorを全て検索
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Tutorial_Candy"), FoundActors);
+
+		for (AActor* Actor : FoundActors)
+		{
+			ASubtitleActor* Subtitle = Cast<ASubtitleActor>(Actor);
+			if (Subtitle)
+			{
+				// 字幕を非表示にする
+				Subtitle->HideSubtitle();
+			}
+		}
+
 		if (ACPP_GetSpace* getSpace = Cast<ACPP_GetSpace>(swordPickupActor)) {
 			getSpace->hidden();
 
