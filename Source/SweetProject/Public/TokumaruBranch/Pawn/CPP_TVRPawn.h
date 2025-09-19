@@ -7,6 +7,8 @@
 #include "TokumaruBranch/Actor/CPP_GetSpace.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "InputAction.h"
+#include "InputMappingContext.h"
 #include "CPP_TVRPawn.generated.h"
 
 
@@ -141,6 +143,24 @@ protected:
 
 	//UPROPERTY(EditAnywhere,Category = "heighter")
 	//float characterWorldZ = 0.0f;
+
+	/// <summary>
+	/// 特定の壁を非表示にし、コリジョンを無効にする処理
+	/// </summary>
+	UFUNCTION()
+	void HideBlockingWalls();
+
+	/// <summary>
+	/// 使用する入力マッピングコンテキスト
+	/// </summary>
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputMappingContext* MyInputMappingContext;
+
+	/// <summary>
+	/// キャンディを拾うための入力アクション
+	/// </summary>
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputAction* PickUpCandyAction;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
