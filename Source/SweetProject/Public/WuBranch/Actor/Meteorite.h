@@ -10,6 +10,11 @@ class USphereComponent;
 class UNiagaraComponent;
 class UParticleSystemComponent;
 
+
+// 25-09-19 おう　効果音関係 火球が着弾して爆発した時
+class USoundBase;
+// 25-09-19 おう　効果音関係
+
 UCLASS()
 class SWEETPROJECT_API AMeteorite : public AActor
 {
@@ -138,6 +143,12 @@ private:
 	/// </summary>
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UParticleSystemComponent* ExplosionEffect;
+
+	/// 25-09-19 おう　効果音関係
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	USoundBase* ExplosionSound;
+
+	/// 25-09-19 おう　効果音関係
 
 	/// <summary>
 	/// 目標

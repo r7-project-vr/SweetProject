@@ -189,6 +189,13 @@ void AMeteorite::UpdateSize()
 void AMeteorite::ShowExplosion()
 {
 	ExplosionEffect->Activate(true);
+
+	// 25-09-19 おう　効果音関係
+	if (ExplosionSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ExplosionSound, GetActorLocation());
+	}
+	// 25-09-19 おう　効果音関係
 }
 
 void AMeteorite::OnExplosionComplete(UParticleSystemComponent* PSystem)
