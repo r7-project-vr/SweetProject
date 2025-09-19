@@ -19,6 +19,8 @@
 #include "TokumaruBranch/Actor/CPP_Sword.h"
 // 2025.09.18 ウー end
 
+#include "Components/AudioComponent.h"
+
 AEnemyBase::AEnemyBase()
 {
     //キャラクター移動引数
@@ -51,6 +53,13 @@ AEnemyBase::AEnemyBase()
     BurningEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("BurningEffect"));
     BurningEffect->SetupAttachment(RootComponent);
     BurningEffect->bAutoActivate = false;
+
+
+    //AudioComponent
+    BurningAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("BurningAudioComponent"));
+    BurningAudioComponent->SetupAttachment(RootComponent);
+
+	BurningAudioComponent->bAutoActivate = false;
 }
 
 void AEnemyBase::BeginPlay()
@@ -124,6 +133,12 @@ float AEnemyBase::TakeDamage(float DamageAmount, const FDamageEvent& DamageEvent
         if (BurningEffect && BurningEffect->IsActive())
         {
             BurningEffect->Deactivate();
+			//死亡したら音も止まる
+            if (BurningAudioComponent && BurningAudioComponent->IsPlaying())
+            {
+                BurningAudioComponent->FadeOut(0.2f, 0.0f);
+            }
+
         }
         SetLifeSpan(5.f);
     }
@@ -237,6 +252,12 @@ void AEnemyBase::OnFireFieldOverlapBegin(UPrimitiveComponent* OverlappedComponen
     {
         StartReceivesDamageOverTime();
         BurningEffect->Activate(true);
+
+        if (BurningSound && BurningAudioComponent)
+        {
+            BurningAudioComponent->SetSound(BurningSound);
+            BurningAudioComponent->FadeIn(0.2f);
+        }
     }
 }
 
@@ -247,5 +268,10 @@ void AEnemyBase::OnFireFieldOverlapEnd(UPrimitiveComponent* OverlappedComponent,
     {
 		StopReceivesDamageOverTime();
         BurningEffect->Deactivate();
+
+        if (BurningAudioComponent && BurningAudioComponent->IsPlaying())
+        {
+            BurningAudioComponent->FadeOut(0.2f, 0.0f);
+		}
     }
 }

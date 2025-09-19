@@ -6,7 +6,8 @@
 // Sets default values
 ACPP_Sword::ACPP_Sword()
 	:
-	currentSecond(powerUpLimitSecond)
+	currentSecond(powerUpLimitSecond),
+	power(MaxPower)
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -31,24 +32,24 @@ void ACPP_Sword::BeginPlay()
 {
 	Super::BeginPlay();
 	currentSecond = powerUpLimitSecond;
-	powerUpEffect->Deactivate();
+	//powerUpEffect->Deactivate();
 }
 
 // Called every frame
 void ACPP_Sword::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	powerUpEffect->SetVisibility(true);
+	//powerUpEffect->SetVisibility(true);
 
 	if (alreadyBaf) {
 		currentSecond -= 1 * DeltaTime;
 		if (currentSecond <= 0) {
-			power = 50;
+			power = MaxPower;
 			alreadyBaf = false;
 			currentSecond = powerUpLimitSecond;
-			if (powerUpEffect) {
-				powerUpEffect->Deactivate();
-			}
+			//if (powerUpEffect) {
+			//	powerUpEffect->Deactivate();
+			//}
 		}
 	}
 }
@@ -61,13 +62,11 @@ void ACPP_Sword::BYInteract()
 {
 	if (alreadyBaf)return;
 	alreadyBaf = true;
-	power = 100.0f;
-	if (powerUpEffect) {
-		powerUpEffect->ActivateSystem();
-		powerUpEffect->Activate(true);
-	}
-	GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Cyan, TEXT("剣変更"));
-	UE_LOG(LogTemp, Error, TEXT("trueになったよ！！！！！！！！！！！！！！"));
+	power = MaxPower * 2;
+	//if (powerUpEffect) {
+	//	powerUpEffect->ActivateSystem();
+	//	powerUpEffect->Activate(true);
+	//}
 }
 
 void ACPP_Sword::OnCollisionBeginOverlapToMatch(AActor* OtherActor)
@@ -97,8 +96,8 @@ bool ACPP_Sword::CheckMatch(AActor* OtherActor)
 
 void ACPP_Sword::EffectVisivleReset()
 {
-	powerUpEffect->SetVisibility(true);
-	powerUpEffect->Activate(true);
-	powerUpEffect->Deactivate();
+	//powerUpEffect->SetVisibility(true);
+	//powerUpEffect->Activate(true);
+	//powerUpEffect->Deactivate();
 }
 
