@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "WitchBossActor.generated.h"
 
+class USoundBase;
+class UAudioComponent;
+
 UCLASS()
 class SWEETPROJECT_API AWitchBossActor : public ACharacter
 {
@@ -35,6 +38,28 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
+
+
+#pragma region Audio
+protected:
+	/// <summary>
+	/// 投げるまでの溜めモーション効果音
+	/// </summary>
+	UPROPERTY(EditDefaultsOnly, Category = "Witch|Audio")
+	USoundBase* ChargeUpSound;
+
+	/// <summary>
+	/// 投げる瞬間効果音
+	/// </summary>
+	UPROPERTY(EditDefaultsOnly, Category = "Witch|Audio")
+	USoundBase* ThrowSound;
+
+	/// <summary>
+	/// 再生用コンポーネント
+	/// </summary>
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Witch|Audio")
+	UAudioComponent* ChargeUpAudioComponent;
+#pragma endregion 
 
 public:	
 	UFUNCTION(BlueprintCallable, Category = "Witch|Facing")
