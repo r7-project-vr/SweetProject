@@ -32,14 +32,14 @@ void ACPP_Sword::BeginPlay()
 {
 	Super::BeginPlay();
 	currentSecond = powerUpLimitSecond;
-	powerUpEffect->Deactivate();
+	//powerUpEffect->Deactivate();
 }
 
 // Called every frame
 void ACPP_Sword::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	powerUpEffect->SetVisibility(true);
+	//powerUpEffect->SetVisibility(true);
 
 	if (alreadyBaf) {
 		currentSecond -= 1 * DeltaTime;
@@ -47,9 +47,9 @@ void ACPP_Sword::Tick(float DeltaTime)
 			power = MaxPower;
 			alreadyBaf = false;
 			currentSecond = powerUpLimitSecond;
-			if (powerUpEffect) {
-				powerUpEffect->Deactivate();
-			}
+			//if (powerUpEffect) {
+			//	powerUpEffect->Deactivate();
+			//}
 		}
 	}
 }
@@ -63,12 +63,10 @@ void ACPP_Sword::BYInteract()
 	if (alreadyBaf)return;
 	alreadyBaf = true;
 	power = MaxPower * 2;
-	if (powerUpEffect) {
-		powerUpEffect->ActivateSystem();
-		powerUpEffect->Activate(true);
-	}
-	GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Cyan, TEXT("剣変更"));
-	UE_LOG(LogTemp, Error, TEXT("trueになったよ！！！！！！！！！！！！！！"));
+	//if (powerUpEffect) {
+	//	powerUpEffect->ActivateSystem();
+	//	powerUpEffect->Activate(true);
+	//}
 }
 
 void ACPP_Sword::OnCollisionBeginOverlapToMatch(AActor* OtherActor)
@@ -98,8 +96,8 @@ bool ACPP_Sword::CheckMatch(AActor* OtherActor)
 
 void ACPP_Sword::EffectVisivleReset()
 {
-	powerUpEffect->SetVisibility(true);
-	powerUpEffect->Activate(true);
-	powerUpEffect->Deactivate();
+	//powerUpEffect->SetVisibility(true);
+	//powerUpEffect->Activate(true);
+	//powerUpEffect->Deactivate();
 }
 
