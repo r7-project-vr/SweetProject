@@ -11,6 +11,9 @@ class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
 class UNiagaraComponent;
 
+class USoundBase;
+class UAudioComponent;
+
 UCLASS()
 class SWEETPROJECT_API AEnemyBase : public ACharacter
 {
@@ -43,6 +46,19 @@ protected:
 
     UFUNCTION()
     void OnFireFieldOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+
+    /// <summary>
+    /// 燃焼エフェクトを再生するためのコンポーネント
+    /// </summary>
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects")
+    UAudioComponent* BurningAudioComponent;
+
+    /// <summary>
+    /// 燃焼中の音
+    /// </summary>
+    UPROPERTY(EditDefaultsOnly, Category = "Effects")
+    USoundBase* BurningSound;
 
 public:
     // アセット
