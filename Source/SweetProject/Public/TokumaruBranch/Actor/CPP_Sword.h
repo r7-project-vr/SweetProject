@@ -6,6 +6,7 @@
 #include <Components/BoxComponent.h>
 #include "TokumaruBranch/Interface/CPP_UinterfaceToIntaract.h"
 #include "GameFramework/Actor.h"
+#include <NiagaraComponent.h>
 #include "CPP_Sword.generated.h"
 
 UCLASS()
@@ -42,11 +43,18 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* AttackCollision;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FX")
+	TObjectPtr<UNiagaraComponent> powerUpEffect;
+
 	/// <summary>
 	/// 攻撃力
 	/// </summary>
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Power")
 	float power = 50.0f;
+
+	float powerUpLimitSecond = 10.0f;
+
+	float currentSecond;
 
 	/// <summary>
 	/// マッチに火がついている状態なら自信を強化する
@@ -64,5 +72,8 @@ public:
 	bool CheckMatch(AActor* OtherActor);
 
 	ICPP_UinterfaceToIntaract* interacter;
+
+	UFUNCTION(BlueprintCallable)
+	void EffectVisivleReset();
 
 };

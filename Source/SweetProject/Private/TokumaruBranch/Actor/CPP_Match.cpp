@@ -33,6 +33,9 @@ ACPP_Match::ACPP_Match()
 void ACPP_Match::BeginPlay()
 {
 	Super::BeginPlay();
+
+	MatchMesh->SetVisibility(false);
+	matchVisible = false;
 	
 }
 
@@ -92,6 +95,7 @@ void ACPP_Match::Tick(float DeltaTime)
 			marukoge = false;
 			koge = false;
 		}
+
 	}
 }
 

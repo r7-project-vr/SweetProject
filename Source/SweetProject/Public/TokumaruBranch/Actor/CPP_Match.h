@@ -95,7 +95,7 @@ public:
 	/// マッチを持ってるかどうか
 	/// </summary>
 	UPROPERTY(BlueprintReadWrite)
-	bool matchVisible = true;
+	bool matchVisible = false;
 
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
 	void changeMeshMaterial(int state);
