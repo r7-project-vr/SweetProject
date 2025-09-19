@@ -6,7 +6,8 @@
 // Sets default values
 ACPP_Sword::ACPP_Sword()
 	:
-	currentSecond(powerUpLimitSecond)
+	currentSecond(powerUpLimitSecond),
+	power(MaxPower)
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -43,7 +44,7 @@ void ACPP_Sword::Tick(float DeltaTime)
 	if (alreadyBaf) {
 		currentSecond -= 1 * DeltaTime;
 		if (currentSecond <= 0) {
-			power = 50;
+			power = MaxPower;
 			alreadyBaf = false;
 			currentSecond = powerUpLimitSecond;
 			if (powerUpEffect) {
@@ -61,7 +62,7 @@ void ACPP_Sword::BYInteract()
 {
 	if (alreadyBaf)return;
 	alreadyBaf = true;
-	power = 100.0f;
+	power = MaxPower * 2;
 	if (powerUpEffect) {
 		powerUpEffect->ActivateSystem();
 		powerUpEffect->Activate(true);

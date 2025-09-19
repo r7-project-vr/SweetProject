@@ -50,7 +50,10 @@ public:
 	/// 攻撃力
 	/// </summary>
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Power")
-	float power = 50.0f;
+	float power = 25.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Power")
+	float MaxPower = 25.0f;
 
 	float powerUpLimitSecond = 10.0f;
 
