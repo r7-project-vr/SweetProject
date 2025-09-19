@@ -5,6 +5,9 @@
 #include "narisawaBranch/SubtitleActor.h"
 #include "TimerManager.h"
 #include <Kismet/GameplayStatics.h>
+#include "InputMappingContext.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 float ACPP_TVRPawn::TakeDamage(float DamageAmount, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
@@ -24,6 +27,19 @@ ACPP_TVRPawn::ACPP_TVRPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// 入力マッピングコンテキストをロード
+	static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMC_Finder(TEXT("/Game/narisawaBranch/IMC_PickUpCandy"));
+	if (IMC_Finder.Succeeded())
+	{
+		MyInputMappingContext = IMC_Finder.Object;
+	}
+
+	// 入力アクションをロード
+	static ConstructorHelpers::FObjectFinder<UInputAction> PickUpCandyActionFinder(TEXT("/Game/narisawaBranch/IA_PickUpCandy"));
+	if (PickUpCandyActionFinder.Succeeded())
+	{
+		PickUpCandyAction = PickUpCandyActionFinder.Object;
+	}
 	//cameraParam = CreateDefaultSubobject<USceneComponent>(TEXT("CameraParam"));
 	//RootComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("lololo"));
 }
@@ -75,6 +91,16 @@ void ACPP_TVRPawn::BeginPlay()
 
 	FTimerHandle resetCamerapos;
 	GetWorldTimerManager().SetTimer(resetCamerapos, this, &ACPP_TVRPawn::InitCameraPosition, 0.1f, false);
+
+	// 入力コンテキストを適用
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			// 正しいIMCを適用
+			Subsystem->AddMappingContext(MyInputMappingContext, 0);
+		}
+	}
 }
 
 // Called every frame
@@ -128,6 +154,15 @@ void ACPP_TVRPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		// PickUpCandy アクションをバインド
+		if (PickUpCandyAction)
+		{
+			// OnCrouchStart() を呼び出すように修正
+			EnhancedInputComponent->BindAction(PickUpCandyAction, ETriggerEvent::Started, this, &ACPP_TVRPawn::HideBlockingWalls);
+		}
+	}
 }
 
 void ACPP_TVRPawn::SetCapsuleHeight(float newHeight)
@@ -177,19 +212,7 @@ void ACPP_TVRPawn::OnCrouchStart()
 		//UE_LOG(LogTemp, Warning, TEXT("装備する"));
 		EquipSword();
 
-		// レベル上の壁アクタを取得
-		TArray<AActor*> FoundWalls;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), FoundWalls); // BP_BlockingWallの親クラスを指定
-
-		for (AActor* WallActor : FoundWalls)
-		{
-			// アクタの名前に "BP_BlockingWall" が含まれているかで判断
-			if (WallActor->GetName().Contains("BP_BlockingWall"))
-			{
-				WallActor->SetActorHiddenInGame(true); // 非表示にする
-				WallActor->SetActorEnableCollision(false); // コリジョンを無効にする
-			}
-		}
+		HideBlockingWalls();
 
 		// "Tutorial_Candy" というタグを持つSubtitleActorを全て検索
 		TArray<AActor*> FoundActors;
@@ -223,3 +246,19 @@ void ACPP_TVRPawn::InitCameraPosition()
 	InitialCameraZ = MyCamera->GetRelativeLocation().Z;
 }
 
+void ACPP_TVRPawn::HideBlockingWalls()
+{
+	// レベル上の壁アクタを取得
+	TArray<AActor*> FoundWalls;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), FoundWalls);
+
+	for (AActor* WallActor : FoundWalls)
+	{
+		// アクタの名前に "BP_BlockingWall" が含まれているかで判断
+		if (WallActor->GetName().Contains("BP_BlockingWall"))
+		{
+			WallActor->SetActorHiddenInGame(true); // 非表示にする
+			WallActor->SetActorEnableCollision(false); // コリジョンを無効にする
+		}
+	}
+}

@@ -12,6 +12,7 @@ public class SweetProject : ModuleRules
             "CoreUObject",
             "Engine",
             "InputCore",
+            "EnhancedInput",
             "Projects",
             "AIModule",
             "GameplayTasks",
