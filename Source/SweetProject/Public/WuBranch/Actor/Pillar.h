@@ -38,6 +38,13 @@ public:
 
 	FDisappearDelegate OnDisappearNotify;
 
+	//25-09-19 おう　効果音関係
+	UFUNCTION(BlueprintPure, Category = "State")
+	bool GetIsBurning() const;
+	//25-09-19 おう　効果音関係
+
+
+
 private:
 
 	UFUNCTION()
@@ -94,5 +101,8 @@ private:
 	/// 焼かれているか
 	/// </summary>
 	bool IsBurning;
+
+
+
 
 };

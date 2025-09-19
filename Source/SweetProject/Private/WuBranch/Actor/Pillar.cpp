@@ -141,3 +141,9 @@ void APillar::NotifyDisappear()
 	if (OnDisappearNotify.IsBound())
 		OnDisappearNotify.Broadcast();
 }
+
+
+bool APillar::GetIsBurning() const
+{
+	return IsBurning;
+}
