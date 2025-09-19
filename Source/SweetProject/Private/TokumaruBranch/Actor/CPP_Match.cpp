@@ -50,10 +50,13 @@ void ACPP_Match::Tick(float DeltaTime)
 	if (isFire) {
 		countDown -= (1 * DeltaTime);
 		if (FireNiagara && MatchMesh) {
+			//FireNiagara->SetVisibility(true);
+			FireNiagara->SetRelativeScale3D(FVector(1, 1, 1));
 			FireNiagara->SetRelativeScale3D(FireNiagara->GetRelativeScale3D() - FVector((1 / matchFinishSecond) * DeltaTime));
 
 			if (normal) {
 				if (countDown <= matchFinishSecond - ((matchFinishSecond / 3))) {
+					FireNiagara->SetVisibility(true);
 					changeMeshMaterial(1);
 					koge = true;
 					normal = false;
@@ -64,6 +67,7 @@ void ACPP_Match::Tick(float DeltaTime)
 
 			if (koge) {
 				if (countDown <= matchFinishSecond - ((matchFinishSecond / 3) * 2)) {
+					FireNiagara->SetVisibility(true);
 					changeMeshMaterial(2);
 					marukoge = true;
 					koge = false;
