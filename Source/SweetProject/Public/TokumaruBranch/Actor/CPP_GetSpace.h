@@ -38,4 +38,6 @@ private:
     /// </summary>
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UNiagaraComponent> Spark;
+
+	bool hiddenActor = false;
 };

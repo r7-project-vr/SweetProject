@@ -34,6 +34,7 @@ void ACPP_GetSpace::Tick(float DeltaTime)
 
 void ACPP_GetSpace::FlashActor()
 {
+	if (hiddenActor)return;
 	for (UStaticMeshComponent* MeshComp : MeshComponents)
 	{
 		if (!MeshComp)break;
@@ -54,6 +55,7 @@ void ACPP_GetSpace::hidden()
 			MeshComp->SetHiddenInGame(true);
 		}
 	}
+	hiddenActor = true;
 	Spark->Deactivate();
 }
 
