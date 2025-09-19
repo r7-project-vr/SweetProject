@@ -11,6 +11,7 @@
 #include "WuBranch/Actor/Component/SkillFireballComponent.h"
 #include "WuBranch/Actor/Meteorite.h"
 // 2025.09.01 ウー end
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AWitchBossActor::AWitchBossActor()
@@ -33,6 +34,11 @@ AWitchBossActor::AWitchBossActor()
 	// 2025.09.01 ウー end
 	//モデルの向きに沿って調整する可能性ある
 
+
+	//Audiocomponentの生成
+	ChargeUpAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("ChargeUpAudioComponent"));
+	ChargeUpAudioComponent->SetupAttachment(RootComponent);
+	ChargeUpAudioComponent->bAutoActivate = false;
 
 }
 
@@ -99,6 +105,13 @@ bool AWitchBossActor::GetIsAttack() const
 void AWitchBossActor::StartAttack()
 {
 	IsAttack = true;
+
+	// 効果音を再生
+	if (ChargeUpSound && ChargeUpAudioComponent)
+	{
+		ChargeUpAudioComponent->SetSound(ChargeUpSound);
+		ChargeUpAudioComponent->FadeIn(0.2f);//　円滑するよう
+	}
 }
 
 void AWitchBossActor::CompleteAttack()
@@ -108,6 +121,17 @@ void AWitchBossActor::CompleteAttack()
 
 void AWitchBossActor::UseFireball(const FVector& TargetLocation, const FVector& StartLocation)
 {
+	//効果音関連
+	if (ChargeUpAudioComponent && ChargeUpAudioComponent->IsPlaying())
+	{
+		ChargeUpAudioComponent->FadeOut(0.1f, 0.f);//　円滑するよう
+	}
+	if (ThrowSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ThrowSound, GetActorLocation());
+	}
+
+
 	// スタート位置
 	FVector SocketLocation = StartLocation;
 
