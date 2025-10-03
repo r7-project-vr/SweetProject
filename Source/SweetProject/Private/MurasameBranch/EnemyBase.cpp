@@ -34,17 +34,17 @@ AEnemyBase::AEnemyBase()
     // 2025.09.06 ウー end
 
     //9-10追加AIPerception
-    Perception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception"));
-    SightCfg = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightCfg"));
-    SightCfg->SightRadius = 2000.f;
-    SightCfg->LoseSightRadius = 2200.f;
-    SightCfg->PeripheralVisionAngleDegrees = 80.f;
-    SightCfg->DetectionByAffiliation.bDetectEnemies = true;
-    SightCfg->DetectionByAffiliation.bDetectFriendlies = true;
-    SightCfg->DetectionByAffiliation.bDetectNeutrals = true;
-
-    Perception->ConfigureSense(*SightCfg);
-    Perception->SetDominantSense(SightCfg->GetSenseImplementation());
+    //Perception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception"));
+    //SightCfg = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightCfg"));
+    //SightCfg->SightRadius = 2000.f;
+    //SightCfg->LoseSightRadius = 2200.f;
+    //SightCfg->PeripheralVisionAngleDegrees = 80.f;
+    //SightCfg->DetectionByAffiliation.bDetectEnemies = true;
+    //SightCfg->DetectionByAffiliation.bDetectFriendlies = true;
+    //SightCfg->DetectionByAffiliation.bDetectNeutrals = true;
+    //
+    //Perception->ConfigureSense(*SightCfg);
+    //Perception->SetDominantSense(SightCfg->GetSenseImplementation());
 
 
     //9-10追加AIPerception
@@ -67,7 +67,7 @@ void AEnemyBase::BeginPlay()
     Super::BeginPlay();
 
     //9-10追加AIPerception
-    if (Perception) Perception->OnPerceptionUpdated.AddDynamic(this, &AEnemyBase::OnPerceptionUpdated);
+    //if (Perception) Perception->OnPerceptionUpdated.AddDynamic(this, &AEnemyBase::OnPerceptionUpdated);
     //9-10追加AIPerception
 
     if (Stats)
@@ -86,33 +86,33 @@ void AEnemyBase::BeginPlay()
 }
 
 //9-10追加AIPerception
-void AEnemyBase::OnPerceptionUpdated(const TArray<AActor*>&)
-{
-	//avilable目標
-    TArray<AActor*> Seen;
-    Perception->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), Seen);
-
-    AActor* Best = nullptr; float BestD2 = TNumericLimits<float>::Max();
-    for (AActor* A : Seen)
-    {
-        float D2 = FVector::DistSquared(A->GetActorLocation(), GetActorLocation());
-        if (D2 < BestD2) { BestD2 = D2; Best = A; }
-
-    }
-
-    //PawnからControllerを取得
-    if (AAIController* AI = Cast<AAIController>(GetController()))
-    {
-	    if (UBlackboardComponent* BB = AI->GetBlackboardComponent())
-	    {
-            BB->SetValueAsObject(TEXT("TargetActor"), Best);
-            BB->SetValueAsVector(TEXT("TargetLocation"), Best ? Best->GetActorLocation() : FVector::ZeroVector);
-            BB->SetValueAsFloat(TEXT("DistanceToTarget"), Best ? FMath::Sqrt(BestD2) : 99999.f);
-	    }
-    }
-
-
-}
+//void AEnemyBase::OnPerceptionUpdated(const TArray<AActor*>&)
+//{
+//	//avilable目標
+//    TArray<AActor*> Seen;
+//    Perception->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), Seen);
+//
+//    AActor* Best = nullptr; float BestD2 = TNumericLimits<float>::Max();
+//    for (AActor* A : Seen)
+//    {
+//        float D2 = FVector::DistSquared(A->GetActorLocation(), GetActorLocation());
+//        if (D2 < BestD2) { BestD2 = D2; Best = A; }
+//
+//    }
+//
+//    //PawnからControllerを取得
+//    if (AAIController* AI = Cast<AAIController>(GetController()))
+//    {
+//	    if (UBlackboardComponent* BB = AI->GetBlackboardComponent())
+//	    {
+//            BB->SetValueAsObject(TEXT("TargetActor"), Best);
+//            BB->SetValueAsVector(TEXT("TargetLocation"), Best ? Best->GetActorLocation() : FVector::ZeroVector);
+//            BB->SetValueAsFloat(TEXT("DistanceToTarget"), Best ? FMath::Sqrt(BestD2) : 99999.f);
+//	    }
+//    }
+//
+//
+//}
 //9-10追加AIPerception
 
 

@@ -70,9 +70,12 @@ void AMeleeEnemy::Attack()
 	////BB->SetValueAsFloat(TEXT("LastAttackTime"), E->GetWorld()->GetTimeSeconds());
 
 	//return;
-	AEnemyAIController* EnemyController = GetController<AEnemyAIController>();
-	EnemyController->TickMeleeJump();
+	//AEnemyAIController* EnemyController = GetController<AEnemyAIController>();
+	//EnemyController->TickMeleeJump();
 	// 2025.09.08 ウー end
+
+	Super::Attack();
+	StartAttack();
 }
 
 void AMeleeEnemy::OpenAttackCollision()

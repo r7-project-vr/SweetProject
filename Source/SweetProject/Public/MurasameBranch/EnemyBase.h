@@ -26,13 +26,13 @@ protected:
 
 
     //9-10 AIPerceptionをEnemyBaseに追加
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI|Perception")
-    UAIPerceptionComponent* Perception = nullptr;
+    //UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI|Perception")
+    //UAIPerceptionComponent* Perception = nullptr;
 
-    UPROPERTY()
-    UAISenseConfig_Sight* SightCfg = nullptr;
+    //UPROPERTY()
+    //UAISenseConfig_Sight* SightCfg = nullptr;
 
-    UFUNCTION() void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
+    //UFUNCTION() void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 
     //9-10
 
