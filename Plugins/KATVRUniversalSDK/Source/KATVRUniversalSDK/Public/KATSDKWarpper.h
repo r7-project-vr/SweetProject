@@ -317,7 +317,7 @@ public:
 		if (handle() != nullptr)
 		{
 			using funcType = void(float);
-			LEDOnceFunc = reinterpret_cast<funcType*>(FPlatformProcess::GetDllExport(handle(), TEXT("amplitude")));
+			LEDOnceFunc = reinterpret_cast<funcType*>(FPlatformProcess::GetDllExport(handle(), TEXT("LEDOnce")));
 
 			LEDOnceFunc(amplitude);
 		}
