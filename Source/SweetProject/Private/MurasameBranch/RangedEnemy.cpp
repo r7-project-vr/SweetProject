@@ -7,6 +7,8 @@
 //#include "BehaviorTree/BlackboardComponent.h"
 //#include "Components/SkeletalMeshComponent.h"
 #include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 
 ARangedEnemy::ARangedEnemy()
@@ -22,23 +24,19 @@ float ARangedEnemy::GetDesiredAttackRange_Implementation() const
 
 void ARangedEnemy::Attack()
 {
-    AAIController* AI = GetController<AAIController>();
+    Super::Attack();
 
+    AAIController* AI = GetController<AAIController>();
     if (!AI) return;
 
-
-    // AEnemyBase* Enemy = Cast<AEnemyBase>(AI->GetPawn());
-    // if (!Enemy || !Enemy->IsAlive()) return EBTNodeResult::Failed;
-	if (!IsAlive()) return;
+    if (!IsAlive()) return;
 
     UBlackboardComponent* BB = AI->GetBlackboardComponent();
-    // if (!BB) return EBTNodeResult::Failed;
-	if (!BB) return;
+    if (!BB) return;
 
     AActor* Target = Cast<AActor>(BB->GetValueAsObject(TEXT("TargetActor")));
-    if (!Target || !ProjectileClass) return;/* EBTNodeResult::Failed;*/
+    if (!Target || !ProjectileClass) return;
 
-    // 発射する位置と向きの決定
     FVector SpawnLoc;
     FRotator SpawnRot;
 
@@ -46,47 +44,100 @@ void ARangedEnemy::Attack()
     {
         if (MuzzleSocketName != NAME_None && SelfMesh->DoesSocketExist(MuzzleSocketName))
         {
-            const FTransform MuzzleTF = SelfMesh->GetSocketTransform(MuzzleSocketName, RTS_World);
+            const FTransform MuzzleTF = SelfMesh->GetSocketTransform(MuzzleSocketName, ERelativeTransformSpace::RTS_World);
             SpawnLoc = MuzzleTF.GetLocation();
             SpawnRot = (Target->GetActorLocation() - SpawnLoc).Rotation();
-            //DrawDebugLine(GetWorld(), SpawnLoc, Target->GetActorLocation(), FColor::Red, false, 50.f, 0, 20.f);
+
         }
         else
         {
-            SpawnLoc = /*Enemy->*/GetActorLocation() + /*Enemy->*/GetActorForwardVector() * FallbackOffset.X
-                + /*Enemy->*/GetActorRightVector() * FallbackOffset.Y
-                + /*Enemy->*/GetActorUpVector() * FallbackOffset.Z;
+            SpawnLoc = GetActorLocation() + GetActorForwardVector() * FallbackOffset.X
+                + GetActorRightVector() * FallbackOffset.Y
+                + GetActorUpVector() * FallbackOffset.Z;
             SpawnRot = (Target->GetActorLocation() - SpawnLoc).Rotation();
         }
+
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = this;
+
+        AEnemyProjectile* Proj = GetWorld()->SpawnActor<AEnemyProjectile>(ProjectileClass, SpawnLoc, SpawnRot, SpawnParams);
+        if (!Proj)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("[RangedEnemy] Spawn Projectile failed."));
+            return;
+        }
+
+        Proj->SetIgnoreActor(this);
+        Proj->Damage = GetDamage();
+                        
     }
-    else
-    {
-        SpawnLoc = /*Enemy->*/GetActorLocation() + /*Enemy->*/GetActorForwardVector() * FallbackOffset.X
-            + /*Enemy->*/GetActorRightVector() * FallbackOffset.Y
-            + /*Enemy->*/GetActorUpVector() * FallbackOffset.Z;
-        SpawnRot = (Target->GetActorLocation() - SpawnLoc).Rotation();
-    }
+ //   AAIController* AI = GetController<AAIController>();
 
-    // FActorSpawnParameters Params;
-    // Params.Owner = Enemy;
-    // Params.Instigator = Enemy; //　ダメージ受ける側を確定
+ //   if (!AI) return;
 
-    AEnemyProjectile* Proj = /*Enemy->*/GetWorld()->SpawnActor<AEnemyProjectile>(ProjectileClass, SpawnLoc, SpawnRot/*, Params*/);
-    if (!Proj)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("[BTTask_RangedAttack] Spawn Projectile failed."));
-        return; //EBTNodeResult::Failed;
-    }
 
-    Proj->SetIgnoreActor(this);
+ //   // AEnemyBase* Enemy = Cast<AEnemyBase>(AI->GetPawn());
+ //   // if (!Enemy || !Enemy->IsAlive()) return EBTNodeResult::Failed;
+	//if (!IsAlive()) return;
 
-    // ダメージ取得
-    Proj->Damage = /*Enemy->*/GetDamage();
+ //   UBlackboardComponent* BB = AI->GetBlackboardComponent();
+ //   // if (!BB) return EBTNodeResult::Failed;
+	//if (!BB) return;
 
-    // // クールタイム記録用
-    // BB->SetValueAsFloat(TEXT("LastAttackTime"), Enemy->GetWorld()->GetTimeSeconds());
+ //   AActor* Target = Cast<AActor>(BB->GetValueAsObject(TEXT("TargetActor")));
+ //   if (!Target || !ProjectileClass) return;/* EBTNodeResult::Failed;*/
 
-    //return EBTNodeResult::Succeeded;
+ //   // 発射する位置と向きの決定
+ //   FVector SpawnLoc;
+ //   FRotator SpawnRot;
+
+ //   if (USkeletalMeshComponent* SelfMesh = GetMesh())
+ //   {
+ //       if (MuzzleSocketName != NAME_None && SelfMesh->DoesSocketExist(MuzzleSocketName))
+ //       {
+ //           const FTransform MuzzleTF = SelfMesh->GetSocketTransform(MuzzleSocketName, RTS_World);
+ //           SpawnLoc = MuzzleTF.GetLocation();
+ //           SpawnRot = (Target->GetActorLocation() - SpawnLoc).Rotation();
+ //           //DrawDebugLine(GetWorld(), SpawnLoc, Target->GetActorLocation(), FColor::Red, false, 50.f, 0, 20.f);
+ //       }
+ //       else
+ //       {
+ //           SpawnLoc = /*Enemy->*/GetActorLocation() + /*Enemy->*/GetActorForwardVector() * FallbackOffset.X
+ //               + /*Enemy->*/GetActorRightVector() * FallbackOffset.Y
+ //               + /*Enemy->*/GetActorUpVector() * FallbackOffset.Z;
+ //           SpawnRot = (Target->GetActorLocation() - SpawnLoc).Rotation();
+ //       }
+ //   }
+ //   else
+ //   {
+ //       SpawnLoc = /*Enemy->*/GetActorLocation() + /*Enemy->*/GetActorForwardVector() * FallbackOffset.X
+ //           + /*Enemy->*/GetActorRightVector() * FallbackOffset.Y
+ //           + /*Enemy->*/GetActorUpVector() * FallbackOffset.Z;
+ //       SpawnRot = (Target->GetActorLocation() - SpawnLoc).Rotation();
+ //   }
+
+ //   // FActorSpawnParameters Params;
+ //   // Params.Owner = Enemy;
+ //   // Params.Instigator = Enemy; //　ダメージ受ける側を確定
+
+ //   AEnemyProjectile* Proj = /*Enemy->*/GetWorld()->SpawnActor<AEnemyProjectile>(ProjectileClass, SpawnLoc, SpawnRot/*, Params*/);
+ //   if (!Proj)
+ //   {
+ //       UE_LOG(LogTemp, Warning, TEXT("[BTTask_RangedAttack] Spawn Projectile failed."));
+ //       return; //EBTNodeResult::Failed;
+ //   }
+
+ //   Proj->SetIgnoreActor(this);
+
+ //   // ダメージ取得
+ //   Proj->Damage = /*Enemy->*/GetDamage();
+
+ //   // // クールタイム記録用
+ //   // BB->SetValueAsFloat(TEXT("LastAttackTime"), Enemy->GetWorld()->GetTimeSeconds());
+
+ //   //return EBTNodeResult::Succeeded;
+
 }
 
 //2025.09.16 得丸陽生
