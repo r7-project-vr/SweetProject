@@ -43,7 +43,11 @@ public:
 	bool GetIsBurning() const;
 	//25-09-19 おう　効果音関係
 
-
+	/// <summary>
+	/// 燃やされるか
+	/// </summary>
+	UFUNCTION(BlueprintCallable)
+	void EnableCanBeBurned();
 
 private:
 
@@ -102,7 +106,9 @@ private:
 	/// </summary>
 	bool IsBurning;
 
-
-
+	/// <summary>
+	/// 燃やされるか
+	/// </summary>
+	bool bCanBeBurned;
 
 };
