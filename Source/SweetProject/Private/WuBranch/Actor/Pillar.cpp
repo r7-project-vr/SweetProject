@@ -14,6 +14,7 @@
 APillar::APillar()
 	: IsBurning(false)
 	, BurningHPLossRate(0.0f)
+	, bCanBeBurned(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -42,6 +43,7 @@ void APillar::Initialize()
 {
 	HP = MaxHP;
 	IsBurning = false;
+	bCanBeBurned = false;
 	//2025 09.16 得丸陽生
 	//if (FireEffect)
 	//{
@@ -68,9 +70,8 @@ float APillar::GetHP() const
 
 void APillar::OnCollisionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor)
+	if (bCanBeBurned && OtherActor)
 	{
-
 		//2025.08.29 得丸陽生
 		if (ACPP_Match* MatchActor = Cast<ACPP_Match>(OtherActor)) {
 			if (MatchActor->GetIsFire()) {
@@ -146,4 +147,9 @@ void APillar::NotifyDisappear()
 bool APillar::GetIsBurning() const
 {
 	return IsBurning;
+}
+
+void APillar::EnableCanBeBurned()
+{
+	bCanBeBurned = true;
 }
