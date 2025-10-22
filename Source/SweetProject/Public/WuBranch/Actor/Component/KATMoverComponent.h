@@ -92,7 +92,7 @@ private:
 	/// 移動速度
 	/// </summary>
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-	float NowSpeed = 4.0f;
+	float NowSpeed = 5.0f;
 
 	/// <summary>
 	/// 移動できるか
